@@ -132,11 +132,12 @@ public class TFIDFCalculator {
 		 * Divide the total score of a word by the total amount of documents in StorageManager
 		 */
 		Map<String, Double> averageTFIDFScores = new HashMap<>();
-
+		TFIDFBiasAdjuster biasAdjuster = TFIDFBiasAdjuster.getInstance();
 		for (Map.Entry<String, Double> entry : totalTFIDFScores.entrySet()) {
 			String word = entry.getKey();
 			double averageTFIDF = entry.getValue() / numDocuments;
-			averageTFIDFScores.put(word, averageTFIDF);
+			double wordBias = biasAdjuster.getBiasByWord(word);
+			averageTFIDFScores.put(word, averageTFIDF + wordBias);
 		}
 
 		return averageTFIDFScores;

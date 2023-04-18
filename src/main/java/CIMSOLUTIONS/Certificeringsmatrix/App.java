@@ -6,28 +6,37 @@ import java.util.List;
 import java.util.Map;
 
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.HierarchicalClustering.WordVectorMatrix;
+import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.TFIDF.TFIDFBiasAdjuster;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.TFIDF.TFIDFDriver;
 import CIMSOLUTIONS.Certificeringsmatrix.Data.Document;
 import CIMSOLUTIONS.Certificeringsmatrix.Data.DocumentLoadingDriver;
+import CIMSOLUTIONS.Certificeringsmatrix.Data.Loaders.BiasedWordsLoader;
 import CIMSOLUTIONS.Certificeringsmatrix.Data.Storage.StorageManager;
 
 public class App {
 	public static void main(String[] args) {
 
+		// Initialization of all documents & classes
+		TFIDFBiasAdjuster biasAdjuster = TFIDFBiasAdjuster.getInstance();
+		biasAdjuster.initializeBiasedWords();
+		
 		DocumentLoadingDriver loadDriver = DocumentLoadingDriver.getInstance();
 		loadDriver.loadDocuments();
-
-		TFIDFDriver iftdfDriver = TFIDFDriver.getInstance();
-		iftdfDriver.calculateTFIDF();
-//		iftdfDriver.writeResultsToFile();
-
+		
 		StorageManager storageManager = StorageManager.getInstance();
 		storageManager.refreshStorageManager();
+		
 
-		WordVectorMatrix matrix = WordVectorMatrix.getInstance();
-		matrix.createWordVectorMatrix();
-		System.out.println(matrix.getNearestWords("developer", 10));
-		System.out.println(matrix.getSimilarityOfMultiTermWords("java developer", "sqlplus"));
+//		TFIDFDriver iftdfDriver = TFIDFDriver.getInstance();
+//		iftdfDriver.calculateTFIDF();
+//		iftdfDriver.writeResultsToFile();
+//
+
+//
+//		WordVectorMatrix matrix = WordVectorMatrix.getInstance();
+//		matrix.createWordVectorMatrix();
+//		System.out.println(matrix.getNearestWords("developer", 10));
+//		System.out.println(matrix.getSimilarityOfMultiTermWords("java developer", "sqlplus"));
 
 	}
 

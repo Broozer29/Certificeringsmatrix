@@ -20,6 +20,11 @@ public class Node {
 		this.value = value;
 	}
 
+	public Node(int id, NodeType type) {
+		this.id = id;
+		this.type = type;
+	}
+
 	public int getId() {
 		return id;
 	}

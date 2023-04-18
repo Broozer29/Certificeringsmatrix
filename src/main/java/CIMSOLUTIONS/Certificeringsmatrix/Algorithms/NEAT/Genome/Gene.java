@@ -1,11 +1,11 @@
 package CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Genome;
 
 public class Gene {
-	int inputNode;
-	int outputNode;
-	double weight;
-	boolean isEnabled;
-	int innovationNumber;
+	private int inputNode;
+	private int outputNode;
+	private double weight;
+	private boolean isEnabled;
+	private int innovationNumber;
 
 	public Gene() {
 		
@@ -19,6 +19,14 @@ public class Gene {
 		this.innovationNumber = innovationNumber;
 	}
 	
+	public Gene(Gene gene) {
+		this.inputNode = gene.getInputNode();
+		this.outputNode = gene.getOutputNode();
+		this.weight = gene.getWeight();
+		this.isEnabled = gene.isEnabled();
+		this.innovationNumber = gene.getInnovation();
+	}
+
 	public int getInputNode() {
 		return inputNode;
 	}
