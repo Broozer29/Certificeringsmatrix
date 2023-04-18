@@ -2,11 +2,14 @@ package CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Genome;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Genome {
 
-	List<Gene> genes = new ArrayList<Gene>();
-	List<Node> nodes = new ArrayList<Node>();
+	private List<Gene> genes = new ArrayList<Gene>();
+	private List<Node> nodes = new ArrayList<Node>();
+	
+	private int fitness;
 
 	public Genome() {
 
@@ -24,5 +27,16 @@ public class Genome {
 		}
 	}
 	
+	public int getFitness() {
+		return fitness;
+	}
+	
+	public List<Node> getNodes(){
+		return this.nodes;
+	}
+
+	public List<Gene> getGenes() {
+		return genes;
+	}
 	
 }

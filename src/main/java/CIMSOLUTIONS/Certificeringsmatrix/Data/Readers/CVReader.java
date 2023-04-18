@@ -38,7 +38,7 @@ public class CVReader {
 				String text = para.getText();
                 String[] sentences = text.split("(?<=[.!?])\\s+");
                 for (String sentence : sentences) {
-                	String cleanedSentence = sentence.replaceAll("[^a-zA-Z\\s]", "").trim().toLowerCase();;
+                	String cleanedSentence = sentence.replaceAll("[^a-zA-Z\\s]", "").trim().toLowerCase();
                     String[] words = cleanedSentence.split("\\s+|/");
                     
                     //Indents between sentences still exist? I don't know yet if this is a problem

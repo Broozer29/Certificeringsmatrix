@@ -1,0 +1,13 @@
+Java
+Hibernate
+.NET
+C#
+C++
+Red Hat
+Scrum
+Agile
+PostgreSQL
+SQL
+SQLPlus
+Springboot
+JUnit
