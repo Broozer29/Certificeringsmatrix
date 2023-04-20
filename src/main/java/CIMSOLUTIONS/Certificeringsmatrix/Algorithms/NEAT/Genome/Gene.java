@@ -24,7 +24,7 @@ public class Gene {
 		this.outputNode = gene.getOutputNode();
 		this.weight = gene.getWeight();
 		this.isEnabled = gene.isEnabled();
-		this.innovationNumber = gene.getInnovation();
+		this.innovationNumber = gene.getInnovationNumber();
 	}
 
 	public int getInputNode() {
@@ -59,11 +59,11 @@ public class Gene {
 		this.isEnabled = isEnabled;
 	}
 
-	public int getInnovation() {
+	public int getInnovationNumber() {
 		return innovationNumber;
 	}
 
-	public void setInnovation(int innovation) {
+	public void setInnovationNumber(int innovation) {
 		this.innovationNumber = innovation;
 	}
 

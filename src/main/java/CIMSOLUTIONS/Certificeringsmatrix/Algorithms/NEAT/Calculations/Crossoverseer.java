@@ -24,7 +24,7 @@ public class Crossoverseer {
 	}
 
 	
-	private Genome crossover(Genome parent1, Genome parent2) {
+	public Genome crossover(Genome parent1, Genome parent2) {
 	    // Make sure parent1 is the fitter parent
 	    if (parent2.getFitness() > parent1.getFitness()) {
 	        Genome temp = parent1;
@@ -50,11 +50,11 @@ public class Crossoverseer {
 
 	        if (gene1 == null) {
 	            break;
-	        } else if (gene2 == null || gene1.getInnovation() < gene2.getInnovation()) {
+	        } else if (gene2 == null || gene1.getInnovationNumber() < gene2.getInnovationNumber()) {
 	            // Inherit gene1
 	            child.getGenes().add(new Gene(gene1));
 	            index1++;
-	        } else if (gene1.getInnovation() > gene2.getInnovation()) {
+	        } else if (gene1.getInnovationNumber() > gene2.getInnovationNumber()) {
 	            // Inherit gene2 if parent2 is also fit
 	            if (parent1.getFitness() == parent2.getFitness()) {
 	                child.getGenes().add(new Gene(gene2));

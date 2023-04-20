@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.HierarchicalClustering.WordVectorMatrix;
+import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.NEAT;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.TFIDF.TFIDFBiasAdjuster;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.TFIDF.TFIDFDriver;
 import CIMSOLUTIONS.Certificeringsmatrix.Data.Document;
@@ -17,14 +18,17 @@ public class App {
 	public static void main(String[] args) {
 
 		// Initialization of all documents & classes
-		TFIDFBiasAdjuster biasAdjuster = TFIDFBiasAdjuster.getInstance();
-		biasAdjuster.initializeBiasedWords();
+//		TFIDFBiasAdjuster biasAdjuster = TFIDFBiasAdjuster.getInstance();
+//		biasAdjuster.initializeBiasedWords();
+//		
+//		DocumentLoadingDriver loadDriver = DocumentLoadingDriver.getInstance();
+//		loadDriver.loadDocuments();
+//		
+//		StorageManager storageManager = StorageManager.getInstance();
+//		storageManager.refreshStorageManager();
 		
-		DocumentLoadingDriver loadDriver = DocumentLoadingDriver.getInstance();
-		loadDriver.loadDocuments();
-		
-		StorageManager storageManager = StorageManager.getInstance();
-		storageManager.refreshStorageManager();
+		NEAT neat = NEAT.getInstance();
+		neat.doTheStuff();
 		
 
 //		TFIDFDriver iftdfDriver = TFIDFDriver.getInstance();
