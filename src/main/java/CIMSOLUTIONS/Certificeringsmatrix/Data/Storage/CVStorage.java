@@ -3,7 +3,7 @@ package CIMSOLUTIONS.Certificeringsmatrix.Data.Storage;
 import java.util.ArrayList;
 import java.util.List;
 
-import CIMSOLUTIONS.Certificeringsmatrix.Data.Document;
+import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Document;
 
 public class CVStorage {
 

@@ -9,8 +9,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
 
-import CIMSOLUTIONS.Certificeringsmatrix.Data.Document;
 import CIMSOLUTIONS.Certificeringsmatrix.Data.Storage.AanvraagStorage;
+import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Document;
 
 public class AanvraagReader {
 
@@ -57,7 +57,7 @@ public class AanvraagReader {
 								}
 							}
 						}
-						// When a sentence is fully processed, reset the sentence and start with the next one
+						// When a sentence is fully processed, reset sentence and start with the next one
 						sentence = "";
 
 					}

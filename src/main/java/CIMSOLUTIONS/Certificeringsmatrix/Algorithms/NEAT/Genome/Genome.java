@@ -1,8 +1,8 @@
 package CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Genome;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.InnovationNumberCalculator;
 
@@ -50,6 +50,14 @@ public class Genome {
 		this.nodes = genome.getNodes();
 		this.genes = genome.getGenes();
 		this.fitness = genome.getFitness();
+	}
+	
+	public LinkedHashMap<String, Double> adjustWordScores(LinkedHashMap<String, Double> wordScores) {
+	    LinkedHashMap<String, Double> adjustedScores = new LinkedHashMap<>();
+
+	    // TODO: Implement the logic to adjust the word scores using the genes and nodes in the Genome
+
+	    return adjustedScores;
 	}
 
 	public void addGene(Gene gene) {

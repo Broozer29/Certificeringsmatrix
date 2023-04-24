@@ -14,13 +14,17 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.ops.transforms.Transforms;
 
-import CIMSOLUTIONS.Certificeringsmatrix.Data.Document;
 import CIMSOLUTIONS.Certificeringsmatrix.Data.Storage.StorageManager;
+import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Competence;
+import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Document;
+import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Role;
 
 public class WordVectorMatrix {
 
 	private static WordVectorMatrix instance = new WordVectorMatrix();
 	private Word2Vec wordVectorMatrix = null;
+	//A high similarity means words have to be closely related to each other. Values betweeon 0.0 and 1.0
+	private double similarityThreshold = 0.8;
 
 	private WordVectorMatrix() {
 
@@ -30,32 +34,27 @@ public class WordVectorMatrix {
 		return instance;
 	}
 
-	//Initializes the matrix containing all vectors of all the words from all the Documents.
+	// Initializes the matrix containing all vectors of all the words from all the
+	// Documents.
 	public void createWordVectorMatrix() {
 		List<Document> allDocuments = StorageManager.getInstance().getAllDocuments();
 
 		List<String> sentences = new ArrayList<>();
 		for (Document document : allDocuments) {
 			sentences.add(String.join(" ", document.getSentencesWithinDocument()));
-			
+
 		}
 
-        SentenceIterator iter = new CollectionSentenceIterator(sentences);
+		SentenceIterator iter = new CollectionSentenceIterator(sentences);
 
-        TokenizerFactory tokenizerFactory = new DefaultTokenizerFactory();
-        tokenizerFactory.setTokenPreProcessor(new CommonPreprocessor());
+		TokenizerFactory tokenizerFactory = new DefaultTokenizerFactory();
+		tokenizerFactory.setTokenPreProcessor(new CommonPreprocessor());
 
-        wordVectorMatrix = new Word2Vec.Builder()
-                .minWordFrequency(1)
-                .layerSize(100)
-                .seed(42)
-                .windowSize(5)
-                .iterate(iter)
-                .tokenizerFactory(tokenizerFactory)
-                .build();
+		wordVectorMatrix = new Word2Vec.Builder().minWordFrequency(1).layerSize(100).seed(42).windowSize(5)
+				.iterate(iter).tokenizerFactory(tokenizerFactory).build();
 
-        wordVectorMatrix.fit();
-    }
+		wordVectorMatrix.fit();
+	}
 
 	public Collection<String> getNearestWords(String word, int amount) {
 		return wordVectorMatrix.wordsNearest(word, amount);
@@ -95,5 +94,26 @@ public class WordVectorMatrix {
 		}
 
 		return Nd4j.mean(Nd4j.vstack(wordVectors), 0);
+	}
+
+	//Adds a competence to a role if it meets the similarityThreshold
+	public void addCompetencesToRoles(List<Competence> competences, List<Role> roles) {
+		for (Competence competence : competences) {
+			for (Role role : roles) {
+				String[] splittedWords = role.getRole().split("\\s+");
+				int wordCount = splittedWords.length;
+				if (wordCount > 1) {
+					Double score = getSimilarityOfMultiTermWords(role.getRole(), competence.getCompetence());
+					if (score > similarityThreshold) {
+						role.addCompetence(competence);
+					}
+				} else {
+					Double score = getSimilarity(role.getRole(), competence.getCompetence());
+					if (score > similarityThreshold) {
+						role.addCompetence(competence);
+					}
+				}
+			}
+		}
 	}
 }

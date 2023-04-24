@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import CIMSOLUTIONS.Certificeringsmatrix.Data.Document;
 import CIMSOLUTIONS.Certificeringsmatrix.Data.Readers.CVReader;
 import CIMSOLUTIONS.Certificeringsmatrix.Data.Storage.CVStorage;
+import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Document;
 
 public class CVLoader {
 

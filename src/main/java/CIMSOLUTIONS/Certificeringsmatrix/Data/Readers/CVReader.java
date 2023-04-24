@@ -9,8 +9,8 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 
-import CIMSOLUTIONS.Certificeringsmatrix.Data.Document;
 import CIMSOLUTIONS.Certificeringsmatrix.Data.Storage.CVStorage;
+import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Document;
 
 public class CVReader {
 

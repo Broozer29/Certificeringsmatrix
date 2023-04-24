@@ -1,7 +1,5 @@
 package CIMSOLUTIONS.Certificeringsmatrix.Algorithms.TFIDF;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,21 +7,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import CIMSOLUTIONS.Certificeringsmatrix.Data.Document;
-import CIMSOLUTIONS.Certificeringsmatrix.Data.Storage.StorageManager;
+import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Competence;
+import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Document;
 
 public class TFIDFCalculator {
 
 	public TFIDFCalculator() {
 
-	}
-
-	// Iterate over each Document and save the TF-IDF scores to the Document
-	public void saveTFIDFScoresToDocuments(Map<Document, Map<String, Double>> TFIDFScoresByDocument) {
-		for (Document document : TFIDFScoresByDocument.keySet()) {
-			Map<String, Double> TFIDFScores = TFIDFScoresByDocument.get(document);
-			document.setTFIDFScores(TFIDFScores);
-		}
 	}
 
 	//Creates a sorted HashMap of the given HashMap
@@ -35,7 +25,8 @@ public class TFIDFCalculator {
 			scoreList.add(entry.getValue());
 		}
 
-		Collections.sort(scoreList);
+		//Sort the list in reverse, so the highest scoring words are on top.
+		Collections.sort(scoreList, Collections.reverseOrder());
 
 		for (Double num : scoreList) {
 			for (Map.Entry<String, Double> entry : averageTFIDFScores.entrySet()) {
@@ -141,5 +132,16 @@ public class TFIDFCalculator {
 		}
 
 		return averageTFIDFScores;
+	}
+	
+	//Transforms a given HashMap of words with scores into a list of competences
+	public List<Competence> createCompetences(Map<String, Double> TFIDFScores){
+		List<Competence> competences = new ArrayList<Competence>();
+		for(Map.Entry<String, Double> entry : TFIDFScores.entrySet()) {
+			Competence newComp = new Competence(entry.getKey(), entry.getValue());
+			competences.add(newComp);
+		}
+		
+		return competences;
 	}
 }

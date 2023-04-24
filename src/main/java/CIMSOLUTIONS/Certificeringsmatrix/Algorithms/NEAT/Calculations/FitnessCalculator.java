@@ -16,4 +16,7 @@ public class FitnessCalculator {
         double randomDouble = min + (max - min) * random.nextDouble();
 		return randomDouble;
 	}
+	
+	
+	
 }

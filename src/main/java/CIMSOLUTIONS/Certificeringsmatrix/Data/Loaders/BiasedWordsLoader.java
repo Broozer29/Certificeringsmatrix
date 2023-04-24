@@ -9,6 +9,7 @@ import java.util.List;
 public class BiasedWordsLoader {
 	
 	private static BiasedWordsLoader instance = new BiasedWordsLoader();
+	private List<String> biasedWords = new ArrayList<String>();
 	
 	private BiasedWordsLoader() {
 		
@@ -19,8 +20,11 @@ public class BiasedWordsLoader {
 	}
 	
 	public List<String> getBiasedWords(){
-		List<String> biasedWords = new ArrayList<String>();
-		
+		return biasedWords;
+	}
+	
+	public void loadBiasedWords(){
+		biasedWords = new ArrayList<String>();
         String filePath = "resources/Bias/BiasedWords.txt";
         
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -36,6 +40,5 @@ public class BiasedWordsLoader {
             e.printStackTrace();
         }
         
-        return biasedWords;
 	}
 }
