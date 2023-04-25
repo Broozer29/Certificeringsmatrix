@@ -32,8 +32,8 @@ public class BiasedWordsLoader {
             while ((line = br.readLine()) != null) {
             	String[] words = line.split("\n");
                 for (String word : words) {
-                	String cleanedWord = word.replaceAll("[^a-zA-Z\\s]", "").trim().toLowerCase();;
-                	biasedWords.add(cleanedWord);
+                	String cleanedWord = word.replaceAll("[^a-zA-Z\\s]", "").trim().toLowerCase();
+                	this.biasedWords.add(cleanedWord);
                 }
             }
         } catch (IOException e) {

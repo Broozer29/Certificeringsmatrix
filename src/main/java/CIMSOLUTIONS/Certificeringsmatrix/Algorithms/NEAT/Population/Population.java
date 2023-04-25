@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.Random;
 
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.Crossoverseer;
-import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.FitnessCalculator;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.GenomeCompatibilityCalculator;
+import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.IFTDFFitnessCalculator;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.Mutator;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Genome.Genome;
+import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.TFIDF.TFIDFDriver;
 
 public class Population {
 	private List<Genome> genomes;
@@ -27,7 +28,7 @@ public class Population {
 	// species with fewer genomes
 	private double speciesSharingThreshold;
 
-	public Population(int populationSize, int inputSize, int outputSize, int speciesSharingThreshold) {
+	public Population(int populationSize, int inputSize, int outputSize, int speciesSharingThreshold, List<String> words) {
 		this.populationSize = populationSize;
 		this.genomes = new ArrayList<Genome>(populationSize);
 		this.mutator = Mutator.getInstance();
@@ -42,16 +43,16 @@ public class Population {
 
 		// Initialize the population with random genomes
 		for (int i = 0; i < populationSize; i++) {
-			genomes.add(new Genome(inputSize, outputSize));
+			genomes.add(new Genome(inputSize, outputSize, words));
 		}
 	}
 
-	public void evolvePopulation(int generations, FitnessCalculator fitnessEvaluator) {
+	public void evolvePopulation(int generations, IFTDFFitnessCalculator fitnessEvaluator) {
 	    Crossoverseer crossover = Crossoverseer.getInstance();
 	    for (int generation = 0; generation < generations; generation++) {
 	        // Evaluate the fitness of each genome
 	        for (Genome genome : genomes) {
-	            double fitness = fitnessEvaluator.evaluate(genome);
+	            double fitness = fitnessEvaluator.calculateFitness(genome);
 	            genome.setFitness(fitness);
 	        }
 
@@ -149,5 +150,9 @@ public class Population {
 
 	public Genome getBestGenome() {
 		return genomes.stream().max(Comparator.comparingDouble(Genome::getFitness)).orElse(null);
+	}
+	
+	public List<Genome> getAllGenomes(){
+		return genomes;
 	}
 }

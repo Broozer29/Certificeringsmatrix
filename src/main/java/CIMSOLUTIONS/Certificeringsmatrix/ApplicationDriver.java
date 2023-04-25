@@ -15,6 +15,7 @@ import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.HierarchicalClustering.WordV
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.TFIDF.TFIDFBiasAdjuster;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.TFIDF.TFIDFDriver;
 import CIMSOLUTIONS.Certificeringsmatrix.Data.DocumentLoadingDriver;
+import CIMSOLUTIONS.Certificeringsmatrix.Data.Loaders.BiasedWordsLoader;
 import CIMSOLUTIONS.Certificeringsmatrix.Data.Loaders.RoleLoader;
 import CIMSOLUTIONS.Certificeringsmatrix.Data.Storage.StorageManager;
 import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Competence;
@@ -28,6 +29,7 @@ public class ApplicationDriver {
 	private TFIDFDriver tfidfDriver = null;
 	private WordVectorMatrix matrix = null;
 	private RoleLoader roleLoader = null;
+	private BiasedWordsLoader biasLoader = null;
 
 	private static ApplicationDriver instance = new ApplicationDriver();
 
@@ -40,8 +42,12 @@ public class ApplicationDriver {
 	}
 
 	public void loadAndReadFiles() {
+		biasLoader = BiasedWordsLoader.getInstance();
+		biasLoader.loadBiasedWords();
+		
 		biasAdjuster = TFIDFBiasAdjuster.getInstance();
 		biasAdjuster.initializeBiasedWords();
+		
 
 		loadDriver = DocumentLoadingDriver.getInstance();
 		loadDriver.loadDocuments();

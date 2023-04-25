@@ -2,30 +2,26 @@ package CIMSOLUTIONS.Certificeringsmatrix;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.HierarchicalClustering.WordVectorMatrix;
-import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.TFIDF.TFIDFBiasAdjuster;
-import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.TFIDF.TFIDFDriver;
-import CIMSOLUTIONS.Certificeringsmatrix.Data.DocumentLoadingDriver;
-import CIMSOLUTIONS.Certificeringsmatrix.Data.Loaders.RoleLoader;
-import CIMSOLUTIONS.Certificeringsmatrix.Data.Storage.StorageManager;
-import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Competence;
+import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.NEAT;
 import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Document;
-import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Role;
 
 public class App {
 	public static void main(String[] args) {
 
 		ApplicationDriver appDriver = ApplicationDriver.getInstance();
+		System.out.println("Loading and reading files");
 		appDriver.loadAndReadFiles();
-//		appDriver.performTFIDF();
+		System.out.println("Performing the TF-IDF Algorithm");
+		appDriver.performTFIDF();
 //		appDriver.performHC();
 //		appDriver.combineCompetencesWithRoles();
 //		appDriver.generateMatrix();
+		NEAT neatInstance = NEAT.getInstance();
+		System.out.println("Performing the NEAT algorithm");
+		neatInstance.executeNeatAlgorithm();
 
 	}
 
