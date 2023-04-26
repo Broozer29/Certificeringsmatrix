@@ -8,6 +8,8 @@ import java.util.Map;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Genome.Gene;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Genome.Genome;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Genome.Node;
+import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Genome.GenomeImplementations.WordScoreGene;
+import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Genome.GenomeImplementations.WordScoreNode;
 
 /*- This class is responsible for crossing genomes
  */
@@ -38,7 +40,12 @@ public class Crossoverseer {
 
 	    // Iterate through the parent1's nodes and inherit them
 	    for (Node node : parent1.getNodes()) {
-	        Node childNode = new Node(node.getId(), node.getType());
+	        Node childNode;
+	        if (node instanceof WordScoreNode) {
+	            childNode = new WordScoreNode(node.getId(), node.getType(), ((WordScoreNode) node).getWord());
+	        } else {
+	            childNode = new Node(node.getId(), node.getType());
+	        }
 	        childNodesMap.put(childNode.getId(), childNode);
 	    }
 
@@ -52,20 +59,36 @@ public class Crossoverseer {
 	            break;
 	        } else if (gene2 == null || gene1.getInnovationNumber() < gene2.getInnovationNumber()) {
 	            // Inherit gene1
-	            child.getGenes().add(new Gene(gene1));
+	            if (gene1 instanceof WordScoreGene) {
+	                child.getGenes().add(new WordScoreGene((WordScoreGene) gene1));
+	            } else {
+	                child.getGenes().add(new Gene(gene1));
+	            }
 	            index1++;
 	        } else if (gene1.getInnovationNumber() > gene2.getInnovationNumber()) {
 	            // Inherit gene2 if parent2 is also fit
 	            if (parent1.getFitness() == parent2.getFitness()) {
-	                child.getGenes().add(new Gene(gene2));
+	                if (gene2 instanceof WordScoreGene) {
+	                    child.getGenes().add(new WordScoreGene((WordScoreGene) gene2));
+	                } else {
+	                    child.getGenes().add(new Gene(gene2));
+	                }
 	            }
 	            index2++;
 	        } else {
 	            // Inherit either gene1 or gene2 randomly if they have the same innovation number
 	            if (Math.random() < 0.5) {
-	                child.getGenes().add(new Gene(gene1));
+	                if (gene1 instanceof WordScoreGene) {
+	                    child.getGenes().add(new WordScoreGene((WordScoreGene) gene1));
+	                } else {
+	                    child.getGenes().add(new Gene(gene1));
+	                }
 	            } else {
-	                child.getGenes().add(new Gene(gene2));
+	                if (gene2 instanceof WordScoreGene) {
+	                    child.getGenes().add(new WordScoreGene((WordScoreGene) gene2));
+	                } else {
+	                    child.getGenes().add(new Gene(gene2));
+	                }
 	            }
 	            index1++;
 	            index2++;
@@ -78,7 +101,6 @@ public class Crossoverseer {
 	    for(Node node : nodesList) {
 	    	child.addNode(node);
 	    }
-
 	    return child;
 	}
 }

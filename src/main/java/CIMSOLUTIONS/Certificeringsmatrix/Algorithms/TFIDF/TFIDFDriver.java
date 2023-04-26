@@ -41,6 +41,7 @@ public class TFIDFDriver {
 		sortedAverageTFIDFScores = tfidfCalculator.createSortedTFIDFScores(averageTFIDFScores);
 		
 		allCompetences = tfidfCalculator.createCompetences(sortedAverageTFIDFScores);
+		writeResultsToFile();
 	}
 	
 	public void writeResultsToFile() {

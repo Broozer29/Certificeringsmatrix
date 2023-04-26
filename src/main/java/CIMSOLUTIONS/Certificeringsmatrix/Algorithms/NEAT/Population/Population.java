@@ -2,6 +2,7 @@ package CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Population;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -28,7 +29,7 @@ public class Population {
 	// species with fewer genomes
 	private double speciesSharingThreshold;
 
-	public Population(int populationSize, int inputSize, int outputSize, int speciesSharingThreshold, List<String> words) {
+	public Population(int populationSize, int inputSize, int outputSize, int speciesSharingThreshold, List<String> words, List<String> biasedWords) {
 		this.populationSize = populationSize;
 		this.genomes = new ArrayList<Genome>(populationSize);
 		this.mutator = Mutator.getInstance();
@@ -43,68 +44,77 @@ public class Population {
 
 		// Initialize the population with random genomes
 		for (int i = 0; i < populationSize; i++) {
-			genomes.add(new Genome(inputSize, outputSize, words));
+			genomes.add(new Genome(inputSize, outputSize, words, biasedWords));
 		}
 	}
 
 	public void evolvePopulation(int generations, IFTDFFitnessCalculator fitnessEvaluator) {
-	    Crossoverseer crossover = Crossoverseer.getInstance();
-	    for (int generation = 0; generation < generations; generation++) {
-	        // Evaluate the fitness of each genome
-	        for (Genome genome : genomes) {
-	            double fitness = fitnessEvaluator.calculateFitness(genome);
-	            genome.setFitness(fitness);
-	        }
+		Crossoverseer crossover = Crossoverseer.getInstance();
+		for (int generation = 0; generation < generations; generation++) {
+			System.out.println("New generation started: " + generation);
+			// Evaluate the fitness of each genome
+			for (Genome genome : genomes) {
+				double fitness = fitnessEvaluator.calculateFitness(genome);
+				genome.setFitness(fitness);
+			}
 
-	        // Speciate the genomes
-	        speciate();
+			// Speciate the genomes
+			speciate();
 
-	        // Apply survival selection
+			// Apply survival selection
 	        for (Species species : speciesList) {
 	            species.applySurvivalSelection(survivalRate);
 	        }
 
-	        // Perform selection, crossover, and mutation to create a new generation
-	        List<Genome> nextGeneration = new ArrayList<>();
-	        for (Species species : speciesList) {
-	            // Preserve the best performing genome from each species
-	            Genome bestInSpecies = species.getGenomes().stream().max(Comparator.comparingDouble(Genome::getFitness))
-	                    .orElse(null);
-	            nextGeneration.add(bestInSpecies);
+			// Perform selection, crossover, and mutation to create a new generation
+			List<Genome> nextGeneration = new ArrayList<>();
+			for (Species species : speciesList) {
+				// Preserve the best performing genome from each species
+				Genome bestInSpecies = species.getGenomes().stream().max(Comparator.comparingDouble(Genome::getFitness))
+						.orElse(null);
+				nextGeneration.add(bestInSpecies);
 
-	            // Calculate the number of offspring for each species based on its shared fitness
-	            int numberOfOffspring = (int) (species.getSharedFitnessSum() / getTotalSharedFitnessSum()
-	                    * (populationSize - speciesList.size()));
-	            List<Genome> selectedGenomes = species.performSelection(numberOfOffspring);
+				// Calculate the number of offspring for each species based on its shared fitness
+				int numberOfOffspring = (int) (species.getSharedFitnessSum() / getTotalSharedFitnessSum()
+						* (populationSize - speciesList.size()));
+				List<Genome> selectedGenomes = species.performSelection(numberOfOffspring);
 
-	            // Create offspring through crossover and mutation
-	            for (int i = 0; i < numberOfOffspring; i++) {
-	                if (selectedGenomes.size() >= 2) {
-	                    Genome parent1 = selectedGenomes.get(random.nextInt(selectedGenomes.size()));
-	                    Genome parent2 = selectedGenomes.get(random.nextInt(selectedGenomes.size()));
-	                    Genome offspring = crossover.crossover(parent1, parent2);
-	                    mutator.mutate(offspring);
-	                    nextGeneration.add(offspring);
-	                } else {
-	                    nextGeneration.add(new Genome(selectedGenomes.get(0)));
-	                }
-	            }
-	        }
+				// Create offspring through crossover and mutation
+				for (int i = 0; i < numberOfOffspring; i++) {
+					if (selectedGenomes.size() >= 2) {
+						Genome parent1 = selectedGenomes.get(random.nextInt(selectedGenomes.size()));
+						Genome parent2 = selectedGenomes.get(random.nextInt(selectedGenomes.size()));
+						Genome offspring = crossover.crossover(parent1, parent2);
 
-	        // Clear the genomes in each species
-	        // This is needed to prevent species from hyperfocussing on a single evolution
-	        for (Species species : speciesList) {
-	            species.clearGenomes();
-	        }
+						System.out.println("Parent 1 fitness: " + parent1.getFitness());
+						System.out.println("Parent 2 fitness: " + parent2.getFitness());
 
-	        // Replace the current generation with the new generation & repeat
-	        genomes = nextGeneration;
+						System.out.println("Child fitness before mutate: " + offspring.getFitness());
+						mutator.mutate(offspring);
+						offspring.setFitness(fitnessEvaluator.calculateFitness(offspring));
+						System.out.println("Child fitness after mutate: " + offspring.getFitness());
+						System.out.println("\n");
+						nextGeneration.add(offspring);
+					} else {
+						nextGeneration.add(new Genome(selectedGenomes.get(0)));
+					}
+				}
+			}
 
-	        // Update the representatives of each species
-	        for (Species species : speciesList) {
-	            species.updateRepresentative();
-	        }
-	    }
+			// Clear the genomes in each species
+			// This is needed to prevent species from hyperfocussing on a single evolution
+			for (Species species : speciesList) {
+				species.clearGenomes();
+			}
+
+			// Replace the current generation with the new generation & repeat
+			genomes = nextGeneration;
+
+			// Update the representatives of each species
+			for (Species species : speciesList) {
+				species.updateRepresentative();
+			}
+		}
 	}
 
 	// Get the total shared fitness sum of all species
@@ -115,7 +125,6 @@ public class Population {
 		}
 		return totalSharedFitnessSum;
 	}
-
 
 	// Splits all genomes into species
 	public void speciate() {
@@ -151,8 +160,8 @@ public class Population {
 	public Genome getBestGenome() {
 		return genomes.stream().max(Comparator.comparingDouble(Genome::getFitness)).orElse(null);
 	}
-	
-	public List<Genome> getAllGenomes(){
+
+	public List<Genome> getAllGenomes() {
 		return genomes;
 	}
 }

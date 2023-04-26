@@ -1,6 +1,9 @@
 package CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Genome;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -15,7 +18,8 @@ public class Genome {
 	private List<Gene> genes = new ArrayList<Gene>();
 	private List<Node> nodes = new ArrayList<Node>();
 	private LinkedHashMap<String, Double> scores = new LinkedHashMap<String, Double>();
-	private Map<String, Double> adjustments = new HashMap<>();;
+	private Map<String, Double> adjustments = new HashMap<>();
+	private List<String> biasedWords = new ArrayList<String>();
 	private double fitness;
 
 	public Genome() {
@@ -23,20 +27,20 @@ public class Genome {
 
 	// Create a Genome with defined inputs & outputs. Required for a random initial
 	// population
-	public Genome(int inputSize, int outputSize, List<String> words) {
-	    nodes = new ArrayList<>();
-	    genes = new ArrayList<>();
-	    InnovationNumberCalculator innovationCalculator = InnovationNumberCalculator.getInstance();
+	public Genome(int inputSize, int outputSize, List<String> words, List<String> biasedWords) {
+		nodes = new ArrayList<>();
+		genes = new ArrayList<>();
+		InnovationNumberCalculator innovationCalculator = InnovationNumberCalculator.getInstance();
 
-	    // Create & add input nodes
-	    for (int i = 0; i < inputSize; i++) {
-	        nodes.add(new WordScoreNode(i + 1, Node.NodeType.INPUT, words.get(i)));
-	    }
+		// Create & add input nodes
+		for (int i = 0; i < inputSize; i++) {
+			nodes.add(new WordScoreNode(i + 1, Node.NodeType.INPUT, words.get(i)));
+		}
 
-	    // Create & add output nodes
-	    for (int i = 0; i < outputSize; i++) {
-	        nodes.add(new WordScoreNode(inputSize + i + 1, Node.NodeType.OUTPUT));
-	    }
+		// Create & add output nodes
+		for (int i = 0; i < outputSize; i++) {
+			nodes.add(new WordScoreNode(inputSize + i + 1, Node.NodeType.OUTPUT));
+		}
 
 		// Create connections between ALL input and ALL output nodes
 		// This is a standard for the NEAT algorithm
@@ -55,6 +59,16 @@ public class Genome {
 		this.nodes = genome.getNodes();
 		this.genes = genome.getGenes();
 		this.fitness = genome.getFitness();
+		this.scores = genome.getScores();
+		this.biasedWords = genome.getbias();
+	}
+
+	public List<String> getbias() {
+		return this.biasedWords;
+	}
+
+	public void setScores(LinkedHashMap<String, Double> scores) {
+		this.scores = scores;
 	}
 
 	public void addGene(Gene gene) {
@@ -114,25 +128,49 @@ public class Genome {
 			String word = entry.getKey();
 			double originalScore = entry.getValue();
 			double bonus = 0;
-
+			
 			if (biasedWords.contains(word)) {
 				for (Gene gene : genes) {
-					WordScoreGene wordScoreGene = (WordScoreGene) gene;
-					int inputNodeId = wordScoreGene.getInputNode();
-					int outputNodeId = wordScoreGene.getOutputNode();
-
-					WordScoreNode inputNode = (WordScoreNode) nodes.get(inputNodeId - 1);
-					WordScoreNode outputNode = (WordScoreNode) nodes.get(outputNodeId - 1);
-					if (inputNode.getWord().equals(word) && outputNode.getType() == Node.NodeType.OUTPUT) {
-						bonus += wordScoreGene.getWeight();
+					if (gene instanceof WordScoreGene) {
+						
+						WordScoreGene wordScoreGene = (WordScoreGene) gene;
+						int inputNodeId = wordScoreGene.getInputNode();
+						int outputNodeId = wordScoreGene.getOutputNode();
+						
+						WordScoreNode inputNode = (WordScoreNode) nodes.get(inputNodeId - 1);
+						WordScoreNode outputNode = (WordScoreNode) nodes.get(outputNodeId - 1);
+						if (inputNode.getWord().equals(word) && outputNode.getType() == Node.NodeType.OUTPUT) {
+							bonus += wordScoreGene.getWeight();
+						}
 					}
 				}
 			}
-
 			adjustedScores.put(word, originalScore + bonus);
 		}
-		scores = adjustedScores;
-		return adjustedScores;
+		this.scores = sortByValueDescending(adjustedScores);
+
+		return scores;
+	}
+
+	// Fucking remove this shit
+	public LinkedHashMap<String, Double> sortByValueDescending(LinkedHashMap<String, Double> unsortedMap) {
+		List<Map.Entry<String, Double>> list = new ArrayList<>(unsortedMap.entrySet());
+
+		// Sort the list using a custom comparator for descending order
+		list.sort(new Comparator<Map.Entry<String, Double>>() {
+			@Override
+			public int compare(Map.Entry<String, Double> o1, Map.Entry<String, Double> o2) {
+				return o2.getValue().compareTo(o1.getValue());
+			}
+		});
+
+		// Create a new LinkedHashMap to store the sorted entries
+		LinkedHashMap<String, Double> sortedMap = new LinkedHashMap<>();
+		for (Map.Entry<String, Double> entry : list) {
+			sortedMap.put(entry.getKey(), entry.getValue());
+		}
+
+		return sortedMap;
 	}
 
 }

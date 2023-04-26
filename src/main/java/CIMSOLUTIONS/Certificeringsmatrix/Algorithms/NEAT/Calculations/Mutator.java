@@ -50,7 +50,7 @@ public class Mutator {
 				double weight = gene.getWeight();
 				// Gaussian is used because this appears to be preferred in A.I.
 				// What specific perks it brings I don't know, but it is recommended so I'll use it
-				double mutation = random.nextGaussian() * 0.5;
+				double mutation = random.nextGaussian() * 2;
 				gene.setWeight(weight + mutation);
 			}
 		}

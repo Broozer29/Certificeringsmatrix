@@ -1,5 +1,7 @@
 package CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -7,14 +9,10 @@ import java.util.Map;
 
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Genome.Genome;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Population.Population;
-import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Population.Species;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.TFIDF.TFIDFDriver;
 import CIMSOLUTIONS.Certificeringsmatrix.Data.Loaders.BiasedWordsLoader;
 
 public class NEAT {
-	private List<Genome> population = new ArrayList<Genome>();
-	private List<Species> species = new ArrayList<Species>();
-
 	private static NEAT instance = new NEAT();
 
 	private NEAT() {
@@ -26,11 +24,7 @@ public class NEAT {
 
 	public void executeNeatAlgorithm() {
 		// Define your problem-specific parameters
-		int inputSize = 300; // Number of input neurons
-		int outputSize = 1; // Number of output neurons
-		int populationSize = 100; // Size of the population
-		int generations = 500; // Number of generations to evolve
-		int speciesSharingThreshold = 3; // Sharing threshold for speciation
+
 
 		// Create the FitnessCalculator implementation for your specific problem
 		TFIDFDriver tfidfDriver = TFIDFDriver.getInstance();
@@ -41,8 +35,15 @@ public class NEAT {
 
 		IFTDFFitnessCalculator fitnessCalculator = new IFTDFFitnessCalculator(wordScores, biasedWords);
 
+		
+		int inputSize = words.size(); // Number of input neurons
+		int outputSize = 5; // Number of output neurons
+		int populationSize = 50; // Size of the population
+		int generations = 10; // Number of generations to evolve
+		int speciesSharingThreshold = 3; // Sharing threshold for speciation
+		
 		// Initialize the population
-		Population population = new Population(populationSize, inputSize, outputSize, speciesSharingThreshold, words);
+		Population population = new Population(populationSize, inputSize, outputSize, speciesSharingThreshold, words, biasedWords);
 
 		// Evolve the population for a given number of generations
 		population.evolvePopulation(generations, fitnessCalculator);
@@ -51,16 +52,20 @@ public class NEAT {
 		Genome bestGenome = population.getBestGenome();
 		System.out.println("Best performing genome after " + generations + " generations:");
 		System.out.println("Genome fitness: " + bestGenome.getFitness());
-//        System.out.println(bestGenome.getScores());
 		
-		
-		int i = 0;
-		for (Map.Entry<String, Double> entry : bestGenome.getScores().entrySet()) {
-			System.out.println(entry.getKey() + ": " + entry.getValue());
-			i++;
-			if (i > 30) {
-				break;
+		String filename = "endresults.txt";
+		try (FileWriter writer = new FileWriter(filename)) {
+			for (Map.Entry<String, Double> entry : bestGenome.getScores().entrySet()) {
+				if (entry.getValue() != 0.0) {
+					writer.write(entry.getKey() + ": " + entry.getValue() + "\n");
+				}
 			}
+			System.out.println("endresults.txt");
+
+		} catch (IOException e) {
+			System.out.println("An error occurred while writing to " + filename);
+			e.printStackTrace();
 		}
+		
 	}
 }

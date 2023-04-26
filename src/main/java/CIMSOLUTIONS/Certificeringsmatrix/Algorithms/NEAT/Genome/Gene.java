@@ -7,9 +7,6 @@ public class Gene {
 	private boolean isEnabled;
 	private int innovationNumber;
 
-	public Gene() {
-		
-	}
 	
 	public Gene(int inputNode, int outputNode, double weight, boolean isEnabled, int innovationNumber) {
 		this.inputNode = inputNode;
@@ -44,7 +41,7 @@ public class Gene {
 	}
 
 	public double getWeight() {
-		return weight;
+		return Math.abs(weight);
 	}
 
 	public void setWeight(double weight) {
