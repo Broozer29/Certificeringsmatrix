@@ -5,6 +5,9 @@ import java.util.List;
 
 import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Document;
 
+/*- This class holds all Documents of the "CV" type
+ * 
+ */
 public class CVStorage {
 
 	private static CVStorage instance = new CVStorage();

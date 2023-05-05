@@ -5,6 +5,10 @@ import java.util.Map;
 
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Genome.ConnectionPair;
 
+/*- This class is responsible for tracking and creating unique InnovationNumbers for Genes
+ * 
+ */
+
 public class InnovationNumberCalculator {
 	private int nextInnovationNumber;
 	private Map<ConnectionPair, Integer> geneInnovations;

@@ -1,17 +1,16 @@
 package CIMSOLUTIONS.Certificeringsmatrix.Data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import CIMSOLUTIONS.Certificeringsmatrix.Data.Loaders.AanvraagLoader;
 import CIMSOLUTIONS.Certificeringsmatrix.Data.Loaders.CVLoader;
 
+/*- This class is responsible for calling the load & read methods of the Document loaders & readers
+ */
 public class DocumentLoadingDriver {
 
 	private static DocumentLoadingDriver instance = new DocumentLoadingDriver();
-	private AanvraagLoader avLoader = AanvraagLoader.getInstance();
-	private CVLoader cvLoader = CVLoader.getInstance();
+	private AanvraagLoader avLoader = null;
+	private CVLoader cvLoader = null;
 
 	private DocumentLoadingDriver() {
 
@@ -22,12 +21,13 @@ public class DocumentLoadingDriver {
 	}
 
 	public void loadDocuments() {
-		avLoader = AanvraagLoader.getInstance();
+		// Load & read all aanvragen
+		avLoader = new AanvraagLoader();
 		avLoader.readAllAanvragen();
 
 		// Load & read all CV's
-		cvLoader = CVLoader.getInstance();
+		cvLoader = new CVLoader();
 		cvLoader.readAllCVs();
 	}
-
+	
 }

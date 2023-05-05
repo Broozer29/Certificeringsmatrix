@@ -2,13 +2,14 @@ package CIMSOLUTIONS.Certificeringsmatrix.DomainObjects;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/*- This class is a representation of a loaded Document.
+ *  A Document can be an Aanvraag, CV or (in future implementations) a LinkedIn profile page or a single vacature
+ */
 public class Document {
 
 	private List<String> wordsWithinDocument = new ArrayList<String>();
@@ -17,56 +18,11 @@ public class Document {
 	private LinkedHashMap<String, Double> sortedIFTDFScores = new LinkedHashMap<String, Double>();
 	private String documentName;
 
-	private LinkedHashMap<String, Integer> wordCounts = new LinkedHashMap<>();
 
 	public Document(String documentName) {
 		this.documentName = documentName;
 	}
 	
-	// ---------------------------------------------------------------------------------------------
-	/*- All methods within these borders exist only for the development of the Fitness Function of the NEAT algorithm.
-	 *  These methods *may* be removed at the end of development, but may still prove useful
-	 */
-
-	public void countWords() {
-		for (String word : wordsWithinDocument) {
-			// If the word is already in the map, increment its count
-			if (wordCounts.containsKey(word)) {
-				wordCounts.put(word, wordCounts.get(word) + 1);
-			}
-			// Otherwise, add the word to the map with a count of 1
-			else {
-				wordCounts.put(word, 1);
-			}
-		}
-
-		wordCounts = sortHashMapDescending(wordCounts);
-	}
-
-	private LinkedHashMap<String, Integer> sortHashMapDescending(HashMap<String, Integer> map) {
-		// Create a list of map entries
-		List<Map.Entry<String, Integer>> list = new LinkedList<>(map.entrySet());
-
-		// Sort the list in descending order by value
-		Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
-			public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-				return o2.getValue().compareTo(o1.getValue());
-			}
-		});
-
-		// Convert the sorted list back to a LinkedHashMap
-		LinkedHashMap<String, Integer> result = new LinkedHashMap<>();
-		for (Map.Entry<String, Integer> entry : list) {
-			result.put(entry.getKey(), entry.getValue());
-		}
-		return result;
-	}
-	
-	public LinkedHashMap<String, Integer> getWordCount(){
-		return wordCounts;
-	}
-
-	// ---------------------------------------------------------------------------------------------
 
 	public void addWord(String word) {
 		this.wordsWithinDocument.add(word);

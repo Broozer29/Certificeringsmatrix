@@ -23,8 +23,12 @@ public class WordVectorMatrix {
 
 	private static WordVectorMatrix instance = new WordVectorMatrix();
 	private Word2Vec wordVectorMatrix = null;
-	//A high similarity means words have to be closely related to each other. Values betweeon 0.0 and 1.0
-	private double similarityThreshold = 0.8;
+
+	private boolean readyForUse = false;
+	
+	// A high similarity means words have to be closely related to each other. Values
+	// betweeon 0.0 and 1.0 are valid values
+	private double biasSimilarityThreshold = 0.9;
 
 	private WordVectorMatrix() {
 
@@ -34,8 +38,8 @@ public class WordVectorMatrix {
 		return instance;
 	}
 
-	// Initializes the matrix containing all vectors of all the words from all the
-	// Documents.
+	/*- Initializes the matrix containing all vectors of all the words from all the Documents.
+	*/
 	public void createWordVectorMatrix() {
 		List<Document> allDocuments = StorageManager.getInstance().getAllDocuments();
 
@@ -54,6 +58,7 @@ public class WordVectorMatrix {
 				.iterate(iter).tokenizerFactory(tokenizerFactory).build();
 
 		wordVectorMatrix.fit();
+		readyForUse = true;
 	}
 
 	public Collection<String> getNearestWords(String word, int amount) {
@@ -70,17 +75,18 @@ public class WordVectorMatrix {
 		INDArray multiTermWord1Vectors = getAverageVector(wordVectorMatrix, firstMultiTermWord);
 		INDArray multiTermWord2Vectors = getAverageVector(wordVectorMatrix, secondMultiTermWord);
 
-		// The similarity() of Word2Vec doesn't support INDArrays, so the ND4j library is used
-		// to calculate the distance between the vectors
+		/*- The similarity() of Word2Vec doesn't support INDArrays, so the ND4j library is used to calculate the distance between the vectors
+		*/
 		if (multiTermWord1Vectors != null && multiTermWord2Vectors != null) {
 			return Transforms.cosineSim(multiTermWord1Vectors, multiTermWord2Vectors);
 		} else
 			return null;
 	}
 
-	// Required for getSimilarityOfDoubleWords.
-	// Calculates the average of vectors from the term. For example: add the vectors of
-	// "Java" and "Developer" into a single vector.
+	/*-
+	 *  Required for getSimilarityOfDoubleWords.
+	 *  Calculates the average of vectors from the term. For example: add the vectors of "Java" and "Developer" into a single vector.
+	 */
 	private INDArray getAverageVector(Word2Vec word2Vec, String multiWordTerm) {
 		String[] words = multiWordTerm.split(" ");
 		INDArray[] wordVectors = new INDArray[words.length];
@@ -95,25 +101,50 @@ public class WordVectorMatrix {
 
 		return Nd4j.mean(Nd4j.vstack(wordVectors), 0);
 	}
+	
+	/*- This method MUST be called AFTER the wordVectorMatrix has calculated it's matrix.
+	 *  Gets all given Biased words. Then, searches ALL loaded words for words that are similar.
+	 *  If they are similar enough, add them as a biased word
+	*/
+	public List<String> calculatedAdjacentBiasedWords(List<String> originalBiasedWords) {
+		if (readyForUse) {
+			List<String> adjacentBiasedWords = new ArrayList<String>();
+			List<String> allBiasedWords = new ArrayList<String>();
+			StorageManager storageManager = StorageManager.getInstance();
+			List<String> allLoadedWords = storageManager.getAllWords();
 
-	//Adds a competence to a role if it meets the similarityThreshold
-	public void addCompetencesToRoles(List<Competence> competences, List<Role> roles) {
-		for (Competence competence : competences) {
-			for (Role role : roles) {
-				String[] splittedWords = role.getRole().split("\\s+");
+			for (String biasedWord : originalBiasedWords) {
+				String[] splittedWords = biasedWord.split("\\s+");
 				int wordCount = splittedWords.length;
-				if (wordCount > 1) {
-					Double score = getSimilarityOfMultiTermWords(role.getRole(), competence.getCompetence());
-					if (score > similarityThreshold) {
-						role.addCompetence(competence);
+
+				for (String word : allLoadedWords) {
+					double similarity = 0.0;
+					if (wordCount > 1) {
+						similarity = getSimilarityOfMultiTermWords(biasedWord, word);
+					} else {
+						similarity = getSimilarity(biasedWord, word);
 					}
-				} else {
-					Double score = getSimilarity(role.getRole(), competence.getCompetence());
-					if (score > similarityThreshold) {
-						role.addCompetence(competence);
+					if (similarity >= biasSimilarityThreshold) {
+						if (!adjacentBiasedWords.contains(word) && !originalBiasedWords.contains(word)) {
+							adjacentBiasedWords.add(word);
+						}
 					}
 				}
 			}
+
+			allBiasedWords.addAll(originalBiasedWords);
+			allBiasedWords.addAll(adjacentBiasedWords);
+			return allBiasedWords;
+		} else {
+			System.out.println("The WordVectorMatrix has to be fitted before it can be used! \n"
+					+ "Make sure the createWordVectorMatrix() of WordVectorMatrix is called before this point");
 		}
+		return null;
 	}
+
+	
+//	/* Called to check if the Matrix has been fitted and can be used for similarity calculations */
+//	public boolean isReadyForUse() {
+//		return readyForUse;
+//	}
 }

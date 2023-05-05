@@ -14,9 +14,7 @@ import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Document;
 
 public class AanvraagReader {
 
-	private static AanvraagReader instance = new AanvraagReader();
-
-	private AanvraagReader() {
+	public AanvraagReader() {
 
 	}
 
@@ -64,24 +62,20 @@ public class AanvraagReader {
 				}
 			};
 
-			//Instructions for the PFDTextStripper to read all pages of the PDF
+			// Instructions for the PFDTextStripper to read all pages of the PDF
 			stripper.setSortByPosition(true);
 			for (int page = 1; page <= document.getNumberOfPages(); page++) {
 				stripper.setStartPage(page);
 				stripper.setEndPage(page);
 				stripper.getText(document);
 			}
-			
-			//When finished reading a PDF, add the newly created Document to the storage
+
+			// When finished reading a PDF, add the newly created Document to the storage
 			aanvragenStorage.addAanvraag(aanvraagDocument);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-	}
-
-	public static AanvraagReader getInstance() {
-		return instance;
 	}
 
 }

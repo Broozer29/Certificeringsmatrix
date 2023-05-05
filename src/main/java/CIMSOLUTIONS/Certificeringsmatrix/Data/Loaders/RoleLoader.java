@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Role;
-
+/*- This class is responsible for loading all Roles that have to be present in the resulting certificeringsmatrix
+ * 
+ */
 public class RoleLoader {
 
 	private static RoleLoader instance = new RoleLoader();
@@ -25,7 +27,7 @@ public class RoleLoader {
 		return roles;
 	}
 
-	public void loadRoles() {
+	public void loadAndReadRoles() {
 		roles = new ArrayList<Role>();
 		String filePath = "resources/Roles/Roles.txt";
 

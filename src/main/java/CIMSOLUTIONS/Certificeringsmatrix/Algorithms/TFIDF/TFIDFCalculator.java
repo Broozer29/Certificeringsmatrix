@@ -10,6 +10,9 @@ import java.util.Map;
 import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Competence;
 import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Document;
 
+/*- This class is responsible for the TF-IDF calculations
+ *  It only contains calculations which are called by other classes
+ */
 public class TFIDFCalculator {
 
 	public TFIDFCalculator() {
@@ -123,25 +126,14 @@ public class TFIDFCalculator {
 		 * Divide the total score of a word by the total amount of documents in StorageManager
 		 */
 		Map<String, Double> averageTFIDFScores = new HashMap<>();
-		TFIDFBiasAdjuster biasAdjuster = TFIDFBiasAdjuster.getInstance();
 		for (Map.Entry<String, Double> entry : totalTFIDFScores.entrySet()) {
 			String word = entry.getKey();
 			double averageTFIDF = entry.getValue() / numDocuments;
-			double wordBias = biasAdjuster.getBiasByWord(word);
-			averageTFIDFScores.put(word, averageTFIDF + wordBias);
+			averageTFIDFScores.put(word, averageTFIDF);
 		}
 
 		return averageTFIDFScores;
 	}
 	
-	//Transforms a given HashMap of words with scores into a list of competences
-	public List<Competence> createCompetences(Map<String, Double> TFIDFScores){
-		List<Competence> competences = new ArrayList<Competence>();
-		for(Map.Entry<String, Double> entry : TFIDFScores.entrySet()) {
-			Competence newComp = new Competence(entry.getKey(), entry.getValue());
-			competences.add(newComp);
-		}
-		
-		return competences;
-	}
+
 }

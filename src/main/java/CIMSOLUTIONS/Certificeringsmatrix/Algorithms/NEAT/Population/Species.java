@@ -65,10 +65,10 @@ public class Species {
     public List<Genome> performSelection(int numberOfOffspring) {
         List<Genome> selectedGenomes = new ArrayList<>();
 
-        // Calculate the total shared fitness of all genomes in the species
+        // Calculate the total shared fitness of all Genomes in the species
         double totalSharedFitness = getSharedFitnessSum();
 
-        // Perform roulette wheel selection to choose genomes for reproduction
+        // Perform roulette wheel selection to choose Genomes for the next generation
         for (int i = 0; i < numberOfOffspring; i++) {
             double randomValue = random.nextDouble() * totalSharedFitness;
             double accumulatedFitness = 0.0;
@@ -86,7 +86,9 @@ public class Species {
     }
 
     public void applySurvivalSelection(double survivalRate) {
-        int survivalThreshold = (int) Math.ceil(genomes.size() * survivalRate); // Keep top 50% of the individuals
+    	// Keep top X% of the individuals, then sort their fitness in descending order and keep the best performing 50%
+    	// Once again credits to Stack Overflow for the Comparator implementation
+        int survivalThreshold = (int) Math.ceil(genomes.size() * survivalRate); 
         genomes.sort(Comparator.comparingDouble(Genome::getFitness).reversed());
         genomes = new ArrayList<>(genomes.subList(0, survivalThreshold));
     }

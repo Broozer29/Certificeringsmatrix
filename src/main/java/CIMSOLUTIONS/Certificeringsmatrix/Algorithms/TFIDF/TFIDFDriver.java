@@ -12,6 +12,9 @@ import CIMSOLUTIONS.Certificeringsmatrix.Data.Storage.StorageManager;
 import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Competence;
 import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Document;
 
+/*- This class is responsible for steering the TF-IDF process
+ *  The individual components of the TF-IDF algorithm are called from here
+ */
 public class TFIDFDriver {
 
 	private static TFIDFDriver instance = new TFIDFDriver();
@@ -19,7 +22,7 @@ public class TFIDFDriver {
 	private LinkedHashMap<String, Double> sortedAverageTFIDFScores = new LinkedHashMap<String, Double>();
 	private Map<Document, Map<String, Double>> TFIDFScoresPerDocument = new HashMap<Document, Map<String, Double>>();
 	private Map<String, Double> averageTFIDFScores = new HashMap<String, Double>();
-	private List<Competence> allCompetences = new ArrayList<Competence>();
+	private TFIDFCalculator tfidfCalculator = new TFIDFCalculator();
 	
 	private TFIDFDriver() {
 	}
@@ -29,18 +32,15 @@ public class TFIDFDriver {
 	}
 
 	public void calculateTFIDF() {
-		TFIDFCalculator tfidfCalculator = new TFIDFCalculator();
-
 		storageManager.refreshStorageManager();
 		List<Document> allDocuments = storageManager.getAllDocuments();
 
 		TFIDFScoresPerDocument = tfidfCalculator.calculateTFIDF(allDocuments);
-		averageTFIDFScores = tfidfCalculator.calculateAverageTFIDF(TFIDFScoresPerDocument, allDocuments.size());
-
 		saveTFIDFScoresToDocuments(TFIDFScoresPerDocument);
-		sortedAverageTFIDFScores = tfidfCalculator.createSortedTFIDFScores(averageTFIDFScores);
 		
-		allCompetences = tfidfCalculator.createCompetences(sortedAverageTFIDFScores);
+		averageTFIDFScores = tfidfCalculator.calculateAverageTFIDF(TFIDFScoresPerDocument, allDocuments.size());
+		sortedAverageTFIDFScores = tfidfCalculator.createSortedTFIDFScores(averageTFIDFScores);
+		storageManager.setWordScores(sortedAverageTFIDFScores);
 		writeResultsToFile();
 	}
 	
@@ -71,14 +71,6 @@ public class TFIDFDriver {
 
 	public Map<Document, Map<String, Double>> getTFIDFScoresByDocument() {
 		return TFIDFScoresPerDocument;
-	}
-
-	public Map<String, Double> getAverageTFIDFScores() {
-		return averageTFIDFScores;
-	}
-	
-	public List<Competence> getCompetences(){
-		return this.allCompetences;
 	}
 
 }

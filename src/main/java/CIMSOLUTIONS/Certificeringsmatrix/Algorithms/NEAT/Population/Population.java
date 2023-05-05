@@ -29,18 +29,21 @@ public class Population {
 	// species with fewer genomes
 	private double speciesSharingThreshold;
 
-	public Population(int populationSize, int inputSize, int outputSize, int speciesSharingThreshold, List<String> words, List<String> biasedWords) {
+	// Constructor used for creating brand new Genomes
+	public Population(int populationSize, int inputSize, int outputSize, int speciesSharingThreshold,
+			List<String> words, List<String> biasedWords, GenomeCompatibilityCalculator compatibilityCalculator,
+			Mutator mutator) {
 		this.populationSize = populationSize;
-		this.genomes = new ArrayList<Genome>(populationSize);
-		this.mutator = Mutator.getInstance();
+		this.genomes = new ArrayList<Genome>();
+		this.mutator = mutator;
 		this.random = new Random();
 
-		speciesList = new ArrayList<>();
-		nextSpeciesId = 1;
-		compatibilityCalculator = new GenomeCompatibilityCalculator(1.0, 1.0, 0.4);
+		this.speciesList = new ArrayList<Species>();
+		this.nextSpeciesId = 1;
+		this.compatibilityCalculator = compatibilityCalculator;
 		this.speciesSharingThreshold = speciesSharingThreshold;
 		// The top 50% of Genomes will survive, the rest won't.
-		survivalRate = 0.5;
+		this.survivalRate = 0.5;
 
 		// Initialize the population with random genomes
 		for (int i = 0; i < populationSize; i++) {
@@ -48,8 +51,29 @@ public class Population {
 		}
 	}
 
-	public void evolvePopulation(int generations, IFTDFFitnessCalculator fitnessEvaluator) {
-		Crossoverseer crossover = Crossoverseer.getInstance();
+	// Constructor used for imported Genomes
+	public Population(int populationSize, Genome importedGenome, int speciesSharingThreshold,
+			List<String> biasedWords, GenomeCompatibilityCalculator compatibilityCalculator, Mutator mutator) {
+		this.populationSize = populationSize;
+		this.genomes = new ArrayList<Genome>();
+		this.mutator = mutator;
+		this.random = new Random();
+		this.nextSpeciesId = 1;
+		this.speciesList = new ArrayList<Species>();
+		this.compatibilityCalculator = compatibilityCalculator;
+		this.speciesSharingThreshold = speciesSharingThreshold;
+
+		// The top 50% of Genomes will survive, the rest won't.
+		this.survivalRate = 0.5;
+
+		// Initialize the population with many instances of the same genome
+		for (int i = 0; i < populationSize; i++) {
+			genomes.add(new Genome(importedGenome));
+		}
+	}
+
+	public void evolvePopulation(int generations, IFTDFFitnessCalculator fitnessEvaluator,
+			Crossoverseer crossoverseer) {
 		for (int generation = 0; generation < generations; generation++) {
 			System.out.println("New generation started: " + generation);
 			// Evaluate the fitness of each genome
@@ -62,9 +86,9 @@ public class Population {
 			speciate();
 
 			// Apply survival selection
-	        for (Species species : speciesList) {
-	            species.applySurvivalSelection(survivalRate);
-	        }
+			for (Species species : speciesList) {
+				species.applySurvivalSelection(survivalRate);
+			}
 
 			// Perform selection, crossover, and mutation to create a new generation
 			List<Genome> nextGeneration = new ArrayList<>();
@@ -84,7 +108,7 @@ public class Population {
 					if (selectedGenomes.size() >= 2) {
 						Genome parent1 = selectedGenomes.get(random.nextInt(selectedGenomes.size()));
 						Genome parent2 = selectedGenomes.get(random.nextInt(selectedGenomes.size()));
-						Genome offspring = crossover.crossover(parent1, parent2);
+						Genome offspring = crossoverseer.crossover(parent1, parent2);
 
 						System.out.println("Parent 1 fitness: " + parent1.getFitness());
 						System.out.println("Parent 2 fitness: " + parent2.getFitness());
@@ -127,7 +151,7 @@ public class Population {
 	}
 
 	// Splits all genomes into species
-	public void speciate() {
+	private void speciate() {
 		// Clear the existing speciesList as we need a new one from scratch
 		speciesList.clear();
 
@@ -157,8 +181,20 @@ public class Population {
 		}
 	}
 
+	// Finds and returns the best performing Genome of the population.
+	// If this method is called regularly, the finding and getting should be seperated
 	public Genome getBestGenome() {
-		return genomes.stream().max(Comparator.comparingDouble(Genome::getFitness)).orElse(null);
+		Genome maxFitnessGenome = null;
+		double maxFitness = 0.0;
+
+		for (Genome genome : genomes) {
+			double fitness = genome.getFitness();
+			if (fitness > maxFitness) {
+				maxFitness = fitness;
+				maxFitnessGenome = genome;
+			}
+		}
+		return maxFitnessGenome;
 	}
 
 	public List<Genome> getAllGenomes() {

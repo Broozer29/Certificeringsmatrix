@@ -6,21 +6,19 @@ import java.util.List;
 
 import CIMSOLUTIONS.Certificeringsmatrix.Data.Readers.AanvraagReader;
 
+/*- This class is responsible for loading all Aanvragen and calling the reader to read the contents
+ * 
+ */
 public class AanvraagLoader {
 
-	private static AanvraagLoader instance = new AanvraagLoader();
 	private List<String> fileNames = new ArrayList<String>();
 
-	private AanvraagLoader() {
+	public AanvraagLoader() {
 		loadAanvraagFileNames();
 	}
 
-	public static AanvraagLoader getInstance() {
-		return instance;
-	}
-
 	public void readAllAanvragen() {
-		AanvraagReader aanvraagReader = AanvraagReader.getInstance();
+		AanvraagReader aanvraagReader = new AanvraagReader();
 		String filePath = "resources/Aanvragen/";
 		for(String fileName : fileNames) {
 			aanvraagReader.readPFDFile(filePath, fileName);

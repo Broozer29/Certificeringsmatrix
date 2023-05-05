@@ -3,7 +3,6 @@ package CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Genome;
 import java.util.Objects;
 
 /*- This class is a representation of a connection between 2 nodes;
- *  Each connectionPair gets a unique innovation number
  */
 public class ConnectionPair {
     private final int inputNodeId;

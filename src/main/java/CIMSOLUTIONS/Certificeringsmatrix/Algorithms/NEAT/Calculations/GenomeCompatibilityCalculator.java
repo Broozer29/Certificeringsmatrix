@@ -28,46 +28,46 @@ public class GenomeCompatibilityCalculator {
 		int excessCount = 0;
 		int matchingCount = 0;
 		double weightDifferenceSum = 0;
-		int i = 0;
-		int j = 0;
+		int gene1Index = 0;
+		int gene2Index = 0;
 
 		// Iterate over both genes simultaneously
-		while (i < genes1.size() && j < genes2.size()) {
-			Gene gene1 = genes1.get(i);
-			Gene gene2 = genes2.get(j);
+		while (gene1Index < genes1.size() && gene2Index < genes2.size()) {
+			Gene gene1 = genes1.get(gene1Index);
+			Gene gene2 = genes2.get(gene2Index);
 
 			// Count the amount of connections BOTH genes have
 			if (gene1.getInnovationNumber() == gene2.getInnovationNumber()) {
 				matchingCount++;
 				weightDifferenceSum += Math.abs(gene1.getWeight() - gene2.getWeight());
-				i++;
-				j++;
+				gene1Index++;
+				gene2Index++;
 				// If gene2 has a higher innovation number, increase the disjount
 			} else if (gene1.getInnovationNumber() < gene2.getInnovationNumber()) {
 				disjointCount++;
 				// Increase the counter of gene1 so the current innovation iterator stays aligned with
 				// the other gene.
-				i++;
+				gene1Index++;
 			}
 			// If gene1 has a higher innovation number, increase the disjoint
 			else {
 				disjointCount++;
 				// Increase the counter of gene2 so the current innovation iterator stays aligned with
 				// the other gene.
-				j++;
+				gene2Index++;
 			}
 		}
 
 		// Calculate the remaining genes from both lists that weren't iterated, these are
 		// excess genes by default.
-		excessCount = (genes1.size() - i) + (genes2.size() - j);
+		excessCount = (genes1.size() - gene1Index) + (genes2.size() - gene2Index);
 		double averageWeightDifference = 0;
 		if (matchingCount > 0) {
 			averageWeightDifference = weightDifferenceSum / matchingCount;
 		}
 
 		// I don't fully understand the math behind the normalizationFactor, but it helps the
-		// NEAT algorithm recognize similar genomes despite having different sizes
+		// NEAT algorithm recognize similar genomes despite having different sizes, so it is implemented
 
 		int normalizationFactor = Math.max(genes1.size(), genes2.size());
 		// If n is 0, use 1 instead, this is needed to prevent a division of 0

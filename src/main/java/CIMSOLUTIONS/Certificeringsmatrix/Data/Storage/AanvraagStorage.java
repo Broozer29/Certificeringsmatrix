@@ -5,6 +5,9 @@ import java.util.List;
 
 import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Document;
 
+/*- This class holds all Documents of the "aanvraag" type
+ * 
+ */
 public class AanvraagStorage {
 	
 	private static AanvraagStorage instance = new AanvraagStorage();

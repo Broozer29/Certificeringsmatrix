@@ -1,5 +1,8 @@
 package CIMSOLUTIONS.Certificeringsmatrix.DomainObjects;
 
+/*- The representation of a "Competentie" within the application
+ * 
+ */
 public class Competence {
 
 	private String competence;
