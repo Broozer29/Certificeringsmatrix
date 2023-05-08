@@ -24,7 +24,7 @@ public class CertificeringsMatrixExporter {
 					if (count >= 5) {
 						break;
 					}
-					writer.write("Competence: " + competence.getCompetence() + " with a score of: "
+					writer.write("Competence: " + competence.getCompetence() + " with a TF-IDF score of: "
 							+ competence.getTFIDFScore() + " \n");
 					count++;
 				}

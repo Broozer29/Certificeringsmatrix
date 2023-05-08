@@ -55,14 +55,14 @@ public class ApplicationDriver {
 		roleLoader.loadAndReadRoles();
 
 		storageManager = StorageManager.getInstance();
-		storageManager.refreshStorageManager();
+		storageManager.populateStorageManager();
 
 		
 	}
 
 	/*- Calculates the IF-TDF score of individual words from the loaded Documents*/
 	public void performTFIDF() {
-		tfidfDriver = TFIDFDriver.getInstance();
+		tfidfDriver = new TFIDFDriver();
 		tfidfDriver.calculateTFIDF();
 	}
 

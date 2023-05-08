@@ -1,4 +1,4 @@
-	package CIMSOLUTIONS.Certificeringsmatrix.Data.Storage;
+package CIMSOLUTIONS.Certificeringsmatrix.Data.Storage;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -35,11 +35,10 @@ public class StorageManager {
 	public static StorageManager getInstance() {
 		return instance;
 	}
-	
 
-	// When a storage has loaded additional files, this function needs to be called
-	// again to synchronize the manager with the storages
-	public void refreshStorageManager() {
+	// When a storage has loaded files, this function needs to be called
+	// to synchronize the manager with the storages
+	public void populateStorageManager() {
 		allDocuments = new ArrayList<Document>();
 		aanvraagStorage = AanvraagStorage.getInstance();
 		cvStorage = CVStorage.getInstance();
@@ -52,37 +51,36 @@ public class StorageManager {
 		for (Document docu : aanvraagStorage.getAllAanvragen()) {
 			allDocuments.add(docu);
 		}
-		
-		for(Document docu : allDocuments) {
+
+		for (Document docu : allDocuments) {
 			for (String word : docu.getWordsWithinDocument()) {
-				if(!allUniqueWords.contains(word)) {
+				if (!allUniqueWords.contains(word)) {
 					allUniqueWords.add(word);
 				}
 			}
 		}
-		
-		for(Role role : roleLoader.getRoles()) {
+
+		for (Role role : roleLoader.getRoles()) {
 			allRoles.add(role);
 		}
-		
-		for(String biasedWord : biasLoader.getOriginalBiasedWords()) {
+
+		for (String biasedWord : biasLoader.getOriginalBiasedWords()) {
 			allBiasedWords.add(biasedWord);
 		}
 	}
-	
-	
-	public List<String> getAllWords(){
+
+	public List<String> getAllWords() {
 		return allUniqueWords;
 	}
-	
-	public List<Document> getAllDocuments(){
+
+	public List<Document> getAllDocuments() {
 		return allDocuments;
 	}
-	
+
 	public List<String> getAllBiasedWords() {
 		return allBiasedWords;
 	}
-	
+
 	public void calculatedAdjacentBiasedWords() {
 		WordVectorMatrix vectorMatrix = WordVectorMatrix.getInstance();
 		this.allBiasedWords = vectorMatrix.calculatedAdjacentBiasedWords(allBiasedWords);

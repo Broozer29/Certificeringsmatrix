@@ -17,35 +17,35 @@ import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Document;
  */
 public class TFIDFDriver {
 
-	private static TFIDFDriver instance = new TFIDFDriver();
-	private StorageManager storageManager = StorageManager.getInstance();
-	private LinkedHashMap<String, Double> sortedAverageTFIDFScores = new LinkedHashMap<String, Double>();
-	private Map<Document, Map<String, Double>> TFIDFScoresPerDocument = new HashMap<Document, Map<String, Double>>();
-	private Map<String, Double> averageTFIDFScores = new HashMap<String, Double>();
-	private TFIDFCalculator tfidfCalculator = new TFIDFCalculator();
-	
-	private TFIDFDriver() {
-	}
+	private StorageManager storageManager;
+	private LinkedHashMap<String, Double> sortedAverageTFIDFScores;
+	private Map<Document, Map<String, Double>> TFIDFScoresPerDocument;
+	private Map<String, Double> averageTFIDFScores;
+	private TFIDFCalculator tfidfCalculator;
 
-	public static TFIDFDriver getInstance() {
-		return instance;
+	public TFIDFDriver() {
+		storageManager = StorageManager.getInstance();
+		sortedAverageTFIDFScores = new LinkedHashMap<String, Double>();
+		TFIDFScoresPerDocument = new HashMap<Document, Map<String, Double>>();
+		 averageTFIDFScores = new HashMap<String, Double>();
+		 tfidfCalculator = new TFIDFCalculator();
 	}
 
 	public void calculateTFIDF() {
-		storageManager.refreshStorageManager();
+		storageManager.populateStorageManager();
 		List<Document> allDocuments = storageManager.getAllDocuments();
 
 		TFIDFScoresPerDocument = tfidfCalculator.calculateTFIDF(allDocuments);
 		saveTFIDFScoresToDocuments(TFIDFScoresPerDocument);
-		
+
 		averageTFIDFScores = tfidfCalculator.calculateAverageTFIDF(TFIDFScoresPerDocument, allDocuments.size());
 		sortedAverageTFIDFScores = tfidfCalculator.createSortedTFIDFScores(averageTFIDFScores);
 		storageManager.setWordScores(sortedAverageTFIDFScores);
 		writeResultsToFile();
 	}
-	
+
 	public void writeResultsToFile() {
-		//Export the sorted list, moet uit deze klasse en in de driver
+		// Export the sorted list, moet uit deze klasse en in de driver
 		try (FileWriter writer = new FileWriter("Average score per word.txt")) {
 			for (Map.Entry<String, Double> entry : sortedAverageTFIDFScores.entrySet()) {
 				writer.write(entry.getKey() + ": " + entry.getValue() + "\n");
@@ -56,7 +56,7 @@ public class TFIDFDriver {
 			e.printStackTrace();
 		}
 	}
-	
+
 	// Iterate over each Document and save the TF-IDF scores to the Document
 	public void saveTFIDFScoresToDocuments(Map<Document, Map<String, Double>> TFIDFScoresByDocument) {
 		for (Document document : TFIDFScoresByDocument.keySet()) {
