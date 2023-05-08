@@ -51,7 +51,7 @@ public class ApplicationDriver {
 		loadDriver = DocumentLoadingDriver.getInstance();
 		loadDriver.loadDocuments();
 
-		roleLoader = RoleLoader.getInstance();
+		roleLoader = new RoleLoader();
 		roleLoader.loadAndReadRoles();
 
 		storageManager = StorageManager.getInstance();
@@ -148,7 +148,7 @@ public class ApplicationDriver {
 	public CertificeringsMatrix combineCompetencesWithRoles(Genome bestPerformingGenome, int maximumAmountOfCompetences,
 			double similarityThreshold) {
 		List<Competence> competences = bestPerformingGenome.createCompetences(maximumAmountOfCompetences);
-		List<Role> roles = roleLoader.getRoles();
+		List<Role> roles = storageManager.getAllRoles();
 		
 		CompetenceRoleCombiner compRoleCombiner = new CompetenceRoleCombiner();
 		CertificeringsMatrix certificeringsMatrix = compRoleCombiner.addCompetencesToRoles(competences, roles, similarityThreshold);

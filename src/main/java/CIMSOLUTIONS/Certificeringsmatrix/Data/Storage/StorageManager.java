@@ -18,7 +18,6 @@ public class StorageManager {
 	private static StorageManager instance = new StorageManager();
 	private AanvraagStorage aanvraagStorage;
 	private CVStorage cvStorage;
-	private RoleLoader roleLoader;
 	private BiasedWordsLoader biasLoader;
 
 	private LinkedHashMap<String, Double> avgWordScores = new LinkedHashMap<String, Double>();
@@ -42,7 +41,6 @@ public class StorageManager {
 		allDocuments = new ArrayList<Document>();
 		aanvraagStorage = AanvraagStorage.getInstance();
 		cvStorage = CVStorage.getInstance();
-		roleLoader = RoleLoader.getInstance();
 		biasLoader = BiasedWordsLoader.getInstance();
 
 		for (Document docu : cvStorage.getAllDocuments()) {
@@ -60,10 +58,6 @@ public class StorageManager {
 			}
 		}
 
-		for (Role role : roleLoader.getRoles()) {
-			allRoles.add(role);
-		}
-
 		for (String biasedWord : biasLoader.getOriginalBiasedWords()) {
 			allBiasedWords.add(biasedWord);
 		}
@@ -79,6 +73,42 @@ public class StorageManager {
 
 	public List<String> getAllBiasedWords() {
 		return allBiasedWords;
+	}
+
+	public List<Role> getAllRoles() {
+		return allRoles;
+	}
+
+	public void addRoles(List<Role> roles) {
+		for (Role role : roles) {
+			if (!allRoles.contains(role)) {
+				allRoles.add(role);
+			}
+		}
+	}
+
+	public void addBiasedWords(List<String> biasedWords) {
+		for (String word : biasedWords) {
+			if (!allBiasedWords.contains(word)) {
+				allBiasedWords.add(word);
+			}
+		}
+	}
+
+	public void addDocuments(List<Document> documents) {
+		for (Document docu : documents) {
+			if (!allDocuments.contains(docu)) {
+				allDocuments.add(docu);
+			}
+		}
+	}
+
+	public void addWords(List<String> words) {
+		for (String word : words) {
+			if (!allUniqueWords.contains(word)) {
+				allUniqueWords.add(word);
+			}
+		}
 	}
 
 	public void calculatedAdjacentBiasedWords() {

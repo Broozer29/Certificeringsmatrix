@@ -6,25 +6,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import CIMSOLUTIONS.Certificeringsmatrix.Data.Storage.StorageManager;
 import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Role;
 /*- This class is responsible for loading all Roles that have to be present in the resulting certificeringsmatrix
  * 
  */
 public class RoleLoader {
 
-	private static RoleLoader instance = new RoleLoader();
 	private List<Role> roles = new ArrayList<Role>();
-
-	private RoleLoader() {
-
-	}
-
-	public static RoleLoader getInstance() {
-		return instance;
-	}
-
-	public List<Role> getRoles() {
-		return roles;
+	public RoleLoader() {
+		
 	}
 
 	public void loadAndReadRoles() {
@@ -41,6 +32,9 @@ public class RoleLoader {
 					roles.add(newRole);
 				}
 			}
+			//Save the loaded roles to the StorageManager
+			StorageManager storageManager = StorageManager.getInstance();
+			storageManager.addRoles(roles);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
