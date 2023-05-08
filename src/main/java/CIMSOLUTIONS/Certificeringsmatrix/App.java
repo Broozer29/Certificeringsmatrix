@@ -5,38 +5,53 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.HierarchicalClustering.WordVectorMatrix;
-import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.TFIDF.TFIDFBiasAdjuster;
-import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.TFIDF.TFIDFDriver;
-import CIMSOLUTIONS.Certificeringsmatrix.Data.Document;
-import CIMSOLUTIONS.Certificeringsmatrix.Data.DocumentLoadingDriver;
-import CIMSOLUTIONS.Certificeringsmatrix.Data.Loaders.BiasedWordsLoader;
-import CIMSOLUTIONS.Certificeringsmatrix.Data.Storage.StorageManager;
+import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Genome.Genome;
+import CIMSOLUTIONS.Certificeringsmatrix.Data.Loaders.GenomeLoader;
+import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.CertificeringsMatrix;
+import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Document;
 
 public class App {
+	// Parts of the application are initialized from here
 	public static void main(String[] args) {
 
-		// Initialization of all documents & classes
-		TFIDFBiasAdjuster biasAdjuster = TFIDFBiasAdjuster.getInstance();
-		biasAdjuster.initializeBiasedWords();
+		ApplicationDriver appDriver = ApplicationDriver.getInstance();
+		System.out.println("Loading and reading files");
+		appDriver.loadAndReadFiles();
 		
-		DocumentLoadingDriver loadDriver = DocumentLoadingDriver.getInstance();
-		loadDriver.loadDocuments();
-		
-		StorageManager storageManager = StorageManager.getInstance();
-		storageManager.refreshStorageManager();
-		
+		System.out.println("Performing the TF-IDF Algorithm");
+		appDriver.performTFIDF();
 
-//		TFIDFDriver iftdfDriver = TFIDFDriver.getInstance();
-//		iftdfDriver.calculateTFIDF();
-//		iftdfDriver.writeResultsToFile();
-//
+		System.out.println("Performing Hierarchical Clustering");
+		appDriver.performHC();
 
-//
-//		WordVectorMatrix matrix = WordVectorMatrix.getInstance();
-//		matrix.createWordVectorMatrix();
-//		System.out.println(matrix.getNearestWords("developer", 10));
-//		System.out.println(matrix.getSimilarityOfMultiTermWords("java developer", "sqlplus"));
+		System.out.println("Finding additional similar Biased words based on the given Biased words");
+		appDriver.findSimilarBiasedWords();
+
+		System.out.println("Performing the NEAT algorithm");
+		GenomeLoader genomeLoader = new GenomeLoader();
+		Genome loadedGenome = null;
+		try {
+			loadedGenome = genomeLoader.loadBestPerformingGenome("Best Performing Genome.ser");
+		} catch (ClassNotFoundException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+//		Genome bestPerformingGenome = appDriver.trainExistingNeuralNetwork(loadedGenome);
+		Genome bestPerformingGenome = appDriver.trainNewNeuralNetworks();
+
+		try {
+			appDriver.exportGenome(bestPerformingGenome, "Best Performing Genome.ser");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("Combining competences with roles using the best performing genome");
+		CertificeringsMatrix certificeringsMatrix = appDriver.combineCompetencesWithRoles(bestPerformingGenome, 30,
+				0.5);
+
+		System.out.println("Exporting matrix");
+		appDriver.exportMatrix(certificeringsMatrix);
 
 	}
 

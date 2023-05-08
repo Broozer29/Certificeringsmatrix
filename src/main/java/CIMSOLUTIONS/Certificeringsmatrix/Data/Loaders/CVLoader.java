@@ -5,21 +5,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import CIMSOLUTIONS.Certificeringsmatrix.Data.Document;
 import CIMSOLUTIONS.Certificeringsmatrix.Data.Readers.CVReader;
-import CIMSOLUTIONS.Certificeringsmatrix.Data.Storage.CVStorage;
-
+/*- This class is responsible for loading all CV's and calling the reader to read the contents
+ * 
+ */
 public class CVLoader {
 
-	private static CVLoader instance = new CVLoader();
 	private List<String> fileNames = new ArrayList<String>();
 
-	private CVLoader() {
+	public CVLoader() {
 		loadCVFileNames();
-	}
-
-	public static CVLoader getInstance() {
-		return instance;
 	}
 
 	public void readAllCVs() {

@@ -1,7 +1,5 @@
 package CIMSOLUTIONS.Certificeringsmatrix.Algorithms.TFIDF;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,21 +7,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import CIMSOLUTIONS.Certificeringsmatrix.Data.Document;
-import CIMSOLUTIONS.Certificeringsmatrix.Data.Storage.StorageManager;
+import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Competence;
+import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Document;
 
+/*- This class is responsible for the TF-IDF calculations
+ *  It only contains calculations which are called by other classes
+ */
 public class TFIDFCalculator {
 
 	public TFIDFCalculator() {
 
-	}
-
-	// Iterate over each Document and save the TF-IDF scores to the Document
-	public void saveTFIDFScoresToDocuments(Map<Document, Map<String, Double>> TFIDFScoresByDocument) {
-		for (Document document : TFIDFScoresByDocument.keySet()) {
-			Map<String, Double> TFIDFScores = TFIDFScoresByDocument.get(document);
-			document.setTFIDFScores(TFIDFScores);
-		}
 	}
 
 	//Creates a sorted HashMap of the given HashMap
@@ -35,7 +28,8 @@ public class TFIDFCalculator {
 			scoreList.add(entry.getValue());
 		}
 
-		Collections.sort(scoreList);
+		//Sort the list in reverse, so the highest scoring words are on top.
+		Collections.sort(scoreList, Collections.reverseOrder());
 
 		for (Double num : scoreList) {
 			for (Map.Entry<String, Double> entry : averageTFIDFScores.entrySet()) {
@@ -132,14 +126,14 @@ public class TFIDFCalculator {
 		 * Divide the total score of a word by the total amount of documents in StorageManager
 		 */
 		Map<String, Double> averageTFIDFScores = new HashMap<>();
-		TFIDFBiasAdjuster biasAdjuster = TFIDFBiasAdjuster.getInstance();
 		for (Map.Entry<String, Double> entry : totalTFIDFScores.entrySet()) {
 			String word = entry.getKey();
 			double averageTFIDF = entry.getValue() / numDocuments;
-			double wordBias = biasAdjuster.getBiasByWord(word);
-			averageTFIDFScores.put(word, averageTFIDF + wordBias);
+			averageTFIDFScores.put(word, averageTFIDF);
 		}
 
 		return averageTFIDFScores;
 	}
+	
+
 }

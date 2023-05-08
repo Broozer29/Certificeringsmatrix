@@ -1,0 +1,56 @@
+Role: java developer
+Competence: xhtml with a score of: 37.34179513504848 
+Competence: aspnet with a score of: 25.338971765058815 
+Competence: teradata with a score of: 19.812409757173114 
+Competence: discoverer with a score of: 19.372603076624117 
+Competence: junit with a score of: 17.885269934047063 
+
+Role: net developer
+Competence: xhtml with a score of: 37.34179513504848 
+Competence: sql with a score of: 32.441197113372446 
+Competence: aspnet with a score of: 25.338971765058815 
+Competence: devops with a score of: 22.343282564731872 
+Competence: teradata with a score of: 19.812409757173114 
+
+Role: python developer
+Competence: xhtml with a score of: 37.34179513504848 
+Competence: sql with a score of: 32.441197113372446 
+Competence: aspnet with a score of: 25.338971765058815 
+Competence: devops with a score of: 22.343282564731872 
+Competence: teradata with a score of: 19.812409757173114 
+
+Role: rust developer
+Competence: xhtml with a score of: 37.34179513504848 
+Competence: teradata with a score of: 19.812409757173114 
+Competence: discoverer with a score of: 19.372603076624117 
+Competence: junit with a score of: 17.885269934047063 
+Competence: jheadstart with a score of: 17.28518899424866 
+
+Role: php developer
+Competence: xhtml with a score of: 37.34179513504848 
+Competence: sql with a score of: 32.441197113372446 
+Competence: aspnet with a score of: 25.338971765058815 
+Competence: teradata with a score of: 19.812409757173114 
+Competence: discoverer with a score of: 19.372603076624117 
+
+Role: backend developer
+Competence: xhtml with a score of: 37.34179513504848 
+Competence: sql with a score of: 32.441197113372446 
+Competence: aspnet with a score of: 25.338971765058815 
+Competence: teradata with a score of: 19.812409757173114 
+Competence: discoverer with a score of: 19.372603076624117 
+
+Role: frontend developer
+Competence: xhtml with a score of: 37.34179513504848 
+Competence: sql with a score of: 32.441197113372446 
+Competence: aspnet with a score of: 25.338971765058815 
+Competence: teradata with a score of: 19.812409757173114 
+Competence: discoverer with a score of: 19.372603076624117 
+
+Role: database manager
+Competence: jul with a score of: 50.51258782513347 
+Competence: abt with a score of: 46.94015409865032 
+Competence: autoindustrie with a score of: 34.35660918807541 
+Competence: aug with a score of: 22.8941464582081 
+Competence: jan with a score of: 18.732445966839165 
+
