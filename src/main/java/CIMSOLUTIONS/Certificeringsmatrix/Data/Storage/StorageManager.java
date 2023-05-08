@@ -16,8 +16,6 @@ import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Role;
 public class StorageManager {
 
 	private static StorageManager instance = new StorageManager();
-	private AanvraagStorage aanvraagStorage;
-	private CVStorage cvStorage;
 	private BiasedWordsLoader biasLoader;
 
 	private LinkedHashMap<String, Double> avgWordScores = new LinkedHashMap<String, Double>();
@@ -27,8 +25,6 @@ public class StorageManager {
 	private List<Role> allRoles = new ArrayList<Role>();
 
 	private StorageManager() {
-		aanvraagStorage = AanvraagStorage.getInstance();
-		cvStorage = CVStorage.getInstance();
 	}
 
 	public static StorageManager getInstance() {
@@ -38,18 +34,7 @@ public class StorageManager {
 	// When a storage has loaded files, this function needs to be called
 	// to synchronize the manager with the storages
 	public void populateStorageManager() {
-		allDocuments = new ArrayList<Document>();
-		aanvraagStorage = AanvraagStorage.getInstance();
-		cvStorage = CVStorage.getInstance();
 		biasLoader = BiasedWordsLoader.getInstance();
-
-		for (Document docu : cvStorage.getAllDocuments()) {
-			allDocuments.add(docu);
-		}
-		for (Document docu : aanvraagStorage.getAllAanvragen()) {
-			allDocuments.add(docu);
-		}
-
 		for (Document docu : allDocuments) {
 			for (String word : docu.getWordsWithinDocument()) {
 				if (!allUniqueWords.contains(word)) {
@@ -61,6 +46,7 @@ public class StorageManager {
 		for (String biasedWord : biasLoader.getOriginalBiasedWords()) {
 			allBiasedWords.add(biasedWord);
 		}
+		
 	}
 
 	public List<String> getAllWords() {

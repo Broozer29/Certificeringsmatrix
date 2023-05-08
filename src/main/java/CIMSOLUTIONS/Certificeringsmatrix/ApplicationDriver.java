@@ -45,15 +45,19 @@ public class ApplicationDriver {
 
 	/*- Loads & reads all files required for the program to function */
 	public void loadAndReadFiles() {
+		System.out.println("   Loading and reading Biased Words");
 		biasLoader = BiasedWordsLoader.getInstance();
 		biasLoader.loadAndReadBiasedWords();
 
+		System.out.println("   Loading, reading & creating Documents (Aanvragen & CV's)");
 		loadDriver = DocumentLoadingDriver.getInstance();
 		loadDriver.loadDocuments();
 
+		System.out.println("   Loading, reading & creating Roles");
 		roleLoader = new RoleLoader();
 		roleLoader.loadAndReadRoles();
 
+		System.out.println("   Populating the StorageManager");
 		storageManager = StorageManager.getInstance();
 		storageManager.populateStorageManager();
 

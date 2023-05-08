@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import CIMSOLUTIONS.Certificeringsmatrix.Data.Readers.CVReader;
+import CIMSOLUTIONS.Certificeringsmatrix.Data.Storage.StorageManager;
+import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Document;
+
 /*- This class is responsible for loading all CV's and calling the reader to read the contents
  * 
  */
@@ -17,15 +20,25 @@ public class CVLoader {
 		loadCVFileNames();
 	}
 
+	// Read all CV's and create documents of them. Then add them to the storagemanager
 	public void readAllCVs() {
-		CVReader reader = CVReader.getInstance();
+		CVReader reader = new CVReader();
+		List<Document> loadedDocuments = new ArrayList<Document>();
+
 		for (String fileName : fileNames) {
 			try {
-				reader.readDocxFile(fileName);
+				Document CV = reader.readDocxFile(fileName);
+				if (CV != null) {
+					loadedDocuments.add(CV);
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+
+		StorageManager storageManager = StorageManager.getInstance();
+		storageManager.addDocuments(loadedDocuments);
+
 	}
 
 	// Reads the amount of files in the CV folder
