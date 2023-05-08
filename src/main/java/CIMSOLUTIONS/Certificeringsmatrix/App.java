@@ -15,19 +15,19 @@ public class App {
 	public static void main(String[] args) {
 
 		ApplicationDriver appDriver = ApplicationDriver.getInstance();
-		System.out.println("Loading and reading files");
+		System.out.println("> Step 1)Loading and reading files");
 		appDriver.loadAndReadFiles();
 		
-		System.out.println("Performing the TF-IDF Algorithm");
+		System.out.println("> Step 2)Performing the TF-IDF Algorithm");
 		appDriver.performTFIDF();
 
-		System.out.println("Performing Hierarchical Clustering");
+		System.out.println("> Step 3)Performing Hierarchical Clustering");
 		appDriver.performHC();
 
-		System.out.println("Finding additional similar Biased words based on the given Biased words");
+		System.out.println("> Step 4)Finding additional similar Biased words based on the given Biased words");
 		appDriver.findSimilarBiasedWords();
 
-		System.out.println("Performing the NEAT algorithm");
+		System.out.println("> Step 5)Performing the NEAT algorithm");
 		GenomeLoader genomeLoader = new GenomeLoader();
 		Genome loadedGenome = null;
 		try {
@@ -46,11 +46,11 @@ public class App {
 			e.printStackTrace();
 		}
 
-		System.out.println("Combining competences with roles using the best performing genome");
+		System.out.println("> Step 6)Combining competences with roles using the best performing genome");
 		CertificeringsMatrix certificeringsMatrix = appDriver.combineCompetencesWithRoles(bestPerformingGenome, 30,
 				0.5);
 
-		System.out.println("Exporting matrix");
+		System.out.println("> Step 7)Exporting matrix");
 		appDriver.exportMatrix(certificeringsMatrix);
 
 	}

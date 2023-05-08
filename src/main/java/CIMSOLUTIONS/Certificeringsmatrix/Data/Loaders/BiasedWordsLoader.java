@@ -13,22 +13,13 @@ import CIMSOLUTIONS.Certificeringsmatrix.Data.Storage.StorageManager;
  *  of the NEAT algorithm's task. Words that are loaded here will recieve a higher score through the NEAT algorithm
  */
 public class BiasedWordsLoader {
-
-	private static BiasedWordsLoader instance = new BiasedWordsLoader();
-	
-	private List<String> originalBiasedWords = new ArrayList<String>();
-
-	private BiasedWordsLoader() {
+	public BiasedWordsLoader() {
 
 	}
 	
-	public static BiasedWordsLoader getInstance() {
-		return instance;
-	}
-
 	// Loads and reads all given biased words
 	public void loadAndReadBiasedWords() {
-		originalBiasedWords = new ArrayList<String>();
+		List<String> originalBiasedWords = new ArrayList<String>();
 		String filePath = "resources/Bias/BiasedWords.txt";
 
 		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -38,16 +29,16 @@ public class BiasedWordsLoader {
 				for (String word : words) {
 					String cleanedWord = word.replaceAll("[^a-zA-Z\\s]", "").trim().toLowerCase();
 					if (!originalBiasedWords.contains(cleanedWord)) {
-						this.originalBiasedWords.add(cleanedWord);
+						originalBiasedWords.add(cleanedWord);
 					}
 				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		StorageManager storageManager = StorageManager.getInstance();
+		storageManager.addBiasedWords(originalBiasedWords);
 	}
 	
-	public List<String> getOriginalBiasedWords(){
-		return this.originalBiasedWords;
-	}
 }

@@ -32,15 +32,20 @@ public class TFIDFDriver {
 	}
 
 	public void calculateTFIDF() {
-		storageManager.populateStorageManager();
 		List<Document> allDocuments = storageManager.getAllDocuments();
 
+		System.out.println("   > Calculating TF-IDF scores of words within all documents");
 		TFIDFScoresPerDocument = tfidfCalculator.calculateTFIDF(allDocuments);
 		saveTFIDFScoresToDocuments(TFIDFScoresPerDocument);
 
+		System.out.println("   > Calculating the average TF-IDF score of each word");
 		averageTFIDFScores = tfidfCalculator.calculateAverageTFIDF(TFIDFScoresPerDocument, allDocuments.size());
 		sortedAverageTFIDFScores = tfidfCalculator.createSortedTFIDFScores(averageTFIDFScores);
+		
+		System.out.println("   > Adding words & their average TF-IDF scores to the StorageManager in sorted order (Descending)");
 		storageManager.setWordScores(sortedAverageTFIDFScores);
+		
+		System.out.println("   > Writing the words & their IF-TDF scores to a text file");
 		writeResultsToFile();
 	}
 

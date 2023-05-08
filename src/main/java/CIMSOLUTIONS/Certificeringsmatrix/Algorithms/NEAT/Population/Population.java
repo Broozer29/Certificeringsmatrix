@@ -75,7 +75,7 @@ public class Population {
 	public void evolvePopulation(int generations, IFTDFFitnessCalculator fitnessEvaluator,
 			Crossoverseer crossoverseer) {
 		for (int generation = 0; generation < generations; generation++) {
-			System.out.println("New generation started: " + generation);
+			System.out.println("      > New generation started: " + generation);
 			// Evaluate the fitness of each genome
 			for (Genome genome : genomes) {
 				double fitness = fitnessEvaluator.calculateFitness(genome);
@@ -110,13 +110,11 @@ public class Population {
 						Genome parent2 = selectedGenomes.get(random.nextInt(selectedGenomes.size()));
 						Genome offspring = crossoverseer.crossover(parent1, parent2);
 
-						System.out.println("Parent 1 fitness: " + parent1.getFitness());
-						System.out.println("Parent 2 fitness: " + parent2.getFitness());
-
-						System.out.println("Child fitness before mutate: " + offspring.getFitness());
+						System.out.println("      > Parent 1 fitness: " + parent1.getFitness());
+						System.out.println("      > Parent 2 fitness: " + parent2.getFitness());
 						mutator.mutate(offspring);
 						offspring.setFitness(fitnessEvaluator.calculateFitness(offspring));
-						System.out.println("Child fitness after mutate: " + offspring.getFitness());
+						System.out.println("      > Child fitness after random mutation: " + offspring.getFitness());
 						System.out.println("\n");
 						nextGeneration.add(offspring);
 					} else {

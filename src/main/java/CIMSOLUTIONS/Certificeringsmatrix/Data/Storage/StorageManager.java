@@ -33,18 +33,13 @@ public class StorageManager {
 
 	// When a storage has loaded files, this function needs to be called
 	// to synchronize the manager with the storages
-	public void populateStorageManager() {
-		biasLoader = BiasedWordsLoader.getInstance();
+	public void filterDuplicateWords() {
 		for (Document docu : allDocuments) {
 			for (String word : docu.getWordsWithinDocument()) {
 				if (!allUniqueWords.contains(word)) {
 					allUniqueWords.add(word);
 				}
 			}
-		}
-
-		for (String biasedWord : biasLoader.getOriginalBiasedWords()) {
-			allBiasedWords.add(biasedWord);
 		}
 		
 	}
