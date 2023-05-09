@@ -34,9 +34,9 @@ public class CompetenceRoleCombiner {
 						competenceSimilarities.put(competence, score);
 					}
 				} else {
-					Double similarityScore = word2VecMatrix.getSimilarity(role.getRole(), competence.getCompetence());
-					if (similarityScore > similarityThreshold) {
-						competenceSimilarities.put(competence, similarityScore);
+					Double score = word2VecMatrix.getSimilarity(role.getRole(), competence.getCompetence());
+					if (score > similarityThreshold) {
+						competenceSimilarities.put(competence, score);
 					}
 				}
 			}

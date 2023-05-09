@@ -24,8 +24,8 @@ public class App {
 		System.out.println("> Step 3)Performing Hierarchical Clustering");
 		appDriver.performHC();
 
-//		System.out.println("> Step 4)Finding additional similar Biased words based on the given Biased words");
-//		appDriver.findSimilarBiasedWords();
+		System.out.println("> Step 4)Finding additional similar Biased words based on the given Biased words");
+		appDriver.findSimilarBiasedWords();
 
 		System.out.println("> Step 5)Performing the NEAT algorithm");
 		GenomeLoader genomeLoader = new GenomeLoader();

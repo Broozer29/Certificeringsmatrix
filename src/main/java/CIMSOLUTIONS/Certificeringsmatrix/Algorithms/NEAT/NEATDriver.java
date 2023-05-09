@@ -7,7 +7,7 @@ import java.util.List;
 
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.Crossoverseer;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.GenomeCompatibilityCalculator;
-import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.TFIDFFitnessCalculator;
+import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.IFTDFFitnessCalculator;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.Mutator;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Genome.Genome;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Population.Population;
@@ -39,7 +39,7 @@ public class NEATDriver {
 	private Mutator mutator = null;
 	private Crossoverseer crossoverseer = null;
 	private GenomeCompatibilityCalculator genomeCompatabilityCalculator = null;
-	private TFIDFFitnessCalculator fitnessCalculator = null;
+	private IFTDFFitnessCalculator fitnessCalculator = null;
 
 	private List<String> words = new ArrayList<String>();
 	private List<String> biasedWords = new ArrayList<String>();
@@ -71,7 +71,7 @@ public class NEATDriver {
 	}
 
 	public void initNEATAlgorithms() {
-		fitnessCalculator = new TFIDFFitnessCalculator(wordScores, biasedWords, topXWordsUsedForFitnessCalculation);
+		fitnessCalculator = new IFTDFFitnessCalculator(wordScores, biasedWords, topXWordsUsedForFitnessCalculation);
 
 		genomeCompatabilityCalculator = new GenomeCompatibilityCalculator(excessGeneImportance, disjointGeneImportance,
 				weightImportance);

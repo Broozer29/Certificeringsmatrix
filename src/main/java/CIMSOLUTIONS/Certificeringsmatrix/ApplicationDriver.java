@@ -94,7 +94,7 @@ public class ApplicationDriver {
 		System.out.println("   > Creating a NEATConfiguration for the NEAT algorithm");
 		NEATConfiguration neatConfig = new NEATConfiguration();
 		neatConfig.setNeuronInputSize(words.size());
-		neatConfig.setDefaultNEATConfigurations();
+		neatConfig = setDefaultNEATConfigurations(neatConfig);
 		neatDriver = new NEATDriver(neatConfig);
 
 		System.out.println("   > Initializing the NEATDriver with words & their TF-IDF scores and all Biased Words");
@@ -123,7 +123,7 @@ public class ApplicationDriver {
 		System.out.println("   > Creating a NEATConfiguration for the NEAT algorithm");
 		NEATConfiguration neatConfig = new NEATConfiguration();
 		neatConfig.setNeuronInputSize(words.size());
-		neatConfig.setDefaultNEATConfigurations();
+		neatConfig = setDefaultNEATConfigurations(neatConfig);
 		neatDriver = new NEATDriver(neatConfig);
 
 		System.out.println("   > Initializing the NEATDriver with words & their TF-IDF scores and all Biased Words loaded from the Genome");
@@ -139,6 +139,26 @@ public class ApplicationDriver {
 			return null;
 	}
 
+	// Sets default configurations for a NEAT instance
+	private NEATConfiguration setDefaultNEATConfigurations(NEATConfiguration neatConfig) {
+		neatConfig.setNeuronOutputSize(5);
+		neatConfig.setPopulationSize(5);
+		neatConfig.setGenerations(1);
+		neatConfig.setSpeciesSharingThreshold(3);
+		neatConfig.setTopXWordsUsedForFitnessCalculation(30);
+
+		neatConfig.setExcessGeneImportance(1.0);
+		neatConfig.setDisjointGeneImportance(0.4);
+		neatConfig.setWeightImportance(0.4);
+
+		neatConfig.setWeightMutationRate(0.8);
+		neatConfig.setNewConnectionMutationRate(0.05);
+		neatConfig.setNewNodeMutationRate(0.03);
+
+		neatConfig.setMutationStrength(1.0);
+
+		return neatConfig;
+	}
 
 	/*-Combines competences (individual words with scores) with Roles using the Word2vec matrix's similarity methods*/
 	public CertificeringsMatrix combineCompetencesWithRoles(Genome bestPerformingGenome, int maximumAmountOfCompetences,
