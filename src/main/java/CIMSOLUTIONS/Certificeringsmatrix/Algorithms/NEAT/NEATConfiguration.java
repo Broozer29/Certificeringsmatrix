@@ -41,8 +41,8 @@ public class NEATConfiguration {
 		setWeightImportance(0.4);
 
 		setWeightMutationRate(0.8);
-		setNewConnectionMutationRate(0.05);
-		setNewNodeMutationRate(0.03);
+		setNewConnectionMutationRate(0.2);
+		setNewNodeMutationRate(0.2);
 
 		setMutationStrength(1.0);
 	}

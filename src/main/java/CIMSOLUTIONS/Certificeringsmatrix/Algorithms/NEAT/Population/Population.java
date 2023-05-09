@@ -47,7 +47,9 @@ public class Population {
 
 		// Initialize the population with random genomes
 		for (int i = 0; i < populationSize; i++) {
-			genomes.add(new Genome(inputSize, outputSize, words, biasedWords));
+			Genome newGenome =  new Genome(inputSize, outputSize, words, biasedWords);
+			mutator.mutate(newGenome);
+			genomes.add(newGenome);
 		}
 	}
 
@@ -80,6 +82,7 @@ public class Population {
 			for (Genome genome : genomes) {
 				double fitness = fitnessEvaluator.calculateFitness(genome);
 				genome.setFitness(fitness);
+				System.out.println(genome.getFitness());
 			}
 
 			// Speciate the genomes
@@ -104,13 +107,20 @@ public class Population {
 				// Calculate the number of offspring for each species based on its shared fitness
 				int numberOfOffspring = (int) (species.getSharedFitnessSum() / getTotalSharedFitnessSum()
 						* (populationSize - speciesList.size()));
-				
 				if(numberOfOffspring < 2) {
 					numberOfOffspring = 2;
 				}
 				
-				List<Genome> selectedGenomes = species.performSelection(numberOfOffspring);
+				//Select the best performing Genome with 50% chance or a random genome with 50% chance
+				// SHOULD BE A CONFIGURATION PARAMETER 
+				List<Genome> selectedGenomes = species.performSelection(numberOfOffspring, 0.5);
 				// Create offspring through crossover and mutation
+				
+				for(Genome gen : selectedGenomes) {
+					System.out.println(" Parents fitness: " + gen.getFitness());
+				}
+				
+				
 				for (int i = 0; i < numberOfOffspring; i++) {
 					if (selectedGenomes.size() >= 2) {
 						Genome parent1 = selectedGenomes.get(random.nextInt(selectedGenomes.size()));
@@ -179,7 +189,7 @@ public class Population {
 			// speciesSharingThreshold is another customizable parameter for the algoritm, 3.0 is
 			// chosen arbitrarily
 			if (!addedToExistingSpecies) {
-				Species newSpecies = new Species(nextSpeciesId++, genome, speciesSharingThreshold);
+				Species newSpecies = new Species(nextSpeciesId++, genome);
 				newSpecies.addGenome(genome);
 				speciesList.add(newSpecies);
 			}
