@@ -27,6 +27,25 @@ public class NEATConfiguration {
 	public NEATConfiguration() {
 		
 	}
+	
+	// Sets default configurations for a NEAT instance
+	public void setDefaultNEATConfigurations() {
+		setNeuronOutputSize(5);
+		setPopulationSize(10);
+		setGenerations(5);
+		setSpeciesSharingThreshold(3);
+		setTopXWordsUsedForFitnessCalculation(30);
+
+		setExcessGeneImportance(1.0);
+		setDisjointGeneImportance(0.4);
+		setWeightImportance(0.4);
+
+		setWeightMutationRate(0.8);
+		setNewConnectionMutationRate(0.05);
+		setNewNodeMutationRate(0.03);
+
+		setMutationStrength(1.0);
+	}
 
 
 	public int getNeuronInputSize() {

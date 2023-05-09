@@ -1,56 +1,49 @@
 Role: java developer
-Competence: mongodb with a score of: 2.0319251147522044 
-Competence: java with a score of: 1.6374430577658874 
-Competence: postgresql with a score of: 1.3126575001506364 
-Competence: jdeveloper with a score of: 1.2372385119330418 
-Competence: junit with a score of: 1.1679267945976346 
+Competence: html with a TF-IDF score of: 15.442743623895398 
+Competence: javascript with a TF-IDF score of: 6.522119386085129 
+Competence: uml with a TF-IDF score of: 6.023620983852793 
+Competence: git with a TF-IDF score of: 4.139766654137703 
+Competence: plsql with a TF-IDF score of: 1.0026160582155275 
 
 Role: net developer
-Competence: csvql with a score of: 1.7827642144700595 
-Competence: net with a score of: 1.3259286073913021 
-Competence: crystal with a score of: 1.2594027047128753 
-Competence: jdeveloper with a score of: 1.2372385119330418 
-Competence: xunit with a score of: 1.02920753856764 
+Competence: html with a TF-IDF score of: 15.442743623895398 
+Competence: javascript with a TF-IDF score of: 6.522119386085129 
+Competence: git with a TF-IDF score of: 4.139766654137703 
+Competence: net with a TF-IDF score of: 3.8128790831935793 
+Competence: c with a TF-IDF score of: 3.7354359415345346 
 
 Role: python developer
-Competence: mongodb with a score of: 2.0319251147522044 
-Competence: csvql with a score of: 1.7827642144700595 
-Competence: postgresql with a score of: 1.3126575001506364 
-Competence: r with a score of: 1.2799974947000448 
-Competence: crystal with a score of: 1.2594027047128753 
+Competence: html with a TF-IDF score of: 15.442743623895398 
+Competence: javascript with a TF-IDF score of: 6.522119386085129 
+Competence: git with a TF-IDF score of: 4.139766654137703 
+Competence: net with a TF-IDF score of: 3.8128790831935793 
+Competence: plsql with a TF-IDF score of: 1.0026160582155275 
 
 Role: rust developer
-Competence: mongodb with a score of: 2.0319251147522044 
-Competence: csvql with a score of: 1.7827642144700595 
-Competence: postgresql with a score of: 1.3126575001506364 
-Competence: r with a score of: 1.2799974947000448 
-Competence: crystal with a score of: 1.2594027047128753 
+Competence: plsql with a TF-IDF score of: 1.0026160582155275 
 
 Role: php developer
-Competence: mongodb with a score of: 2.0319251147522044 
-Competence: csvql with a score of: 1.7827642144700595 
-Competence: postgresql with a score of: 1.3126575001506364 
-Competence: crystal with a score of: 1.2594027047128753 
-Competence: jdeveloper with a score of: 1.2372385119330418 
+Competence: html with a TF-IDF score of: 15.442743623895398 
+Competence: javascript with a TF-IDF score of: 6.522119386085129 
+Competence: git with a TF-IDF score of: 4.139766654137703 
+Competence: net with a TF-IDF score of: 3.8128790831935793 
+Competence: plsql with a TF-IDF score of: 1.0026160582155275 
 
 Role: backend developer
-Competence: mongodb with a score of: 2.0319251147522044 
-Competence: postgresql with a score of: 1.3126575001506364 
-Competence: r with a score of: 1.2799974947000448 
-Competence: crystal with a score of: 1.2594027047128753 
-Competence: jdeveloper with a score of: 1.2372385119330418 
+Competence: html with a TF-IDF score of: 15.442743623895398 
+Competence: javascript with a TF-IDF score of: 6.522119386085129 
+Competence: git with a TF-IDF score of: 4.139766654137703 
+Competence: devops with a TF-IDF score of: 3.1711397510277295 
+Competence: plsql with a TF-IDF score of: 1.0026160582155275 
 
 Role: frontend developer
-Competence: mongodb with a score of: 2.0319251147522044 
-Competence: postgresql with a score of: 1.3126575001506364 
-Competence: r with a score of: 1.2799974947000448 
-Competence: crystal with a score of: 1.2594027047128753 
-Competence: jdeveloper with a score of: 1.2372385119330418 
+Competence: html with a TF-IDF score of: 15.442743623895398 
+Competence: javascript with a TF-IDF score of: 6.522119386085129 
+Competence: git with a TF-IDF score of: 4.139766654137703 
+Competence: net with a TF-IDF score of: 3.8128790831935793 
+Competence: plsql with a TF-IDF score of: 1.0026160582155275 
 
 Role: database manager
-Competence: feb with a score of: 2.600998804715457 
-Competence: aug with a score of: 2.088397919521602 
-Competence: jul with a score of: 2.068707478463745 
-Competence: jun with a score of: 1.7992564086611516 
-Competence: abt with a score of: 1.1401360418822288 
+Competence: apr with a TF-IDF score of: 2.366940043970646 
+Competence: omschrijving with a TF-IDF score of: 6.032712417232486E-4 
 

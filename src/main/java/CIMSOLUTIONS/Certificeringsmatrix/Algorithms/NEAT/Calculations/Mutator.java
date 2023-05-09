@@ -1,5 +1,6 @@
 package CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -64,51 +65,75 @@ public class Mutator {
 		}
 	}
 
-	// Adds a new connection between 2 existing nodes
-	private void addNewConnection(Genome genome) {
-		List<Node> inputNodes = genome.getInputNodes();
-		List<Node> outputNodes = genome.getOutputNodes();
-		// Select random nodes
-		Node node1 = inputNodes.get(random.nextInt(inputNodes.size()));
-		Node node2 = outputNodes.get(random.nextInt(outputNodes.size()));
+	   // Adds a new connection between 2 existing nodes
+    private void addNewConnection(Genome genome) {
+        List<Node> allNodes = new ArrayList<>();
+        allNodes.addAll(genome.getInputNodes());
+        allNodes.addAll(genome.getOutputNodes());
+        allNodes.addAll(genome.getHiddenNodes());
 
-		// If the randomly selected nodes are inputs & outputs only, return
-		// This is needed because inputs and outputs can't be connected with their own type.
-		if (node1.getType() == Node.NodeType.INPUT && node2.getType() == Node.NodeType.INPUT) {
-			return;
-		}
+        Node node1 = null;
+        Node node2 = null;
+		boolean possibleConnectionFound = false;
 
-		if (node1.getType() == Node.NodeType.OUTPUT && node2.getType() == Node.NodeType.OUTPUT) {
-			return;
-		}
+        // Continue to search for a valid connection until one is found
+        while (!possibleConnectionFound) {
+            node1 = allNodes.get(random.nextInt(allNodes.size()));
+            node2 = allNodes.get(random.nextInt(allNodes.size()));
 
-		// A node cannot create a connection with itself
-		if (node1.getId() == node2.getId()) {
-			return;
-		}
+            // Check if the nodes are not the same and if the connection doesn't already exist
+            if (node1.getId() != node2.getId() && !genome.hasConnection(node1.getId(), node2.getId())) {
+                possibleConnectionFound = true;
+            }
+        }
 
-		if (node1.getType() == Node.NodeType.HIDDEN && node2.getType() == Node.NodeType.INPUT) {
-			Node temp = node1;
-			node1 = node2;
-			node2 = temp;
-		}
+        // If the selected nodes are hidden and input, swap them to maintain the proper connection direction
+        if (node1.getType() == Node.NodeType.HIDDEN && node2.getType() == Node.NodeType.INPUT) {
+            Node temp = node1;
+            node1 = node2;
+            node2 = temp;
+        }
 
-		// We don't want duplicate connections
-		if (genome.hasConnection(node1.getId(), node2.getId())) {
-			return;
-		}
-
-		// Create a new gene and add it to the genome
-		int inputNode = node1.getId();
-		int outputNode = node2.getId();
-		double weight = random.nextGaussian();
-		int innovationNumber = innovationCalculator.getInnovationNumber(inputNode, outputNode);
-		Gene newGene = new Gene(inputNode, outputNode, weight, true, innovationNumber);
-		genome.addGene(newGene);
-	}
+        int inputNode = node1.getId();
+        int outputNode = node2.getId();
+        double weight = random.nextGaussian(); /*- Generate a random weight using Gaussian distribution, this is to get a proper distribution of random doubles*/
+        int innovationNumber = innovationCalculator.getInnovationNumber(inputNode, outputNode);
+        Gene newGene = new Gene(inputNode, outputNode, weight, true, innovationNumber);
+        genome.addGene(newGene);
+    }
 
 	// Creates a new node inbetween existing nodes
-	private void addNewNode(Genome genome) {
+//    private void addNewNode(Genome genome) {
+//        List<Gene> genes = genome.getGenes();
+//        if (genes.isEmpty()) {
+//            return;
+//        }
+//
+//        //Select a random Gene to split and disable it
+//        Gene geneToSplit = genes.get(random.nextInt(genes.size()));
+//        geneToSplit.setEnabled(false);
+//
+//        //Create a new hidden node
+//        int newInputNodeID = genome.getInputNodes().size() + 1;
+//        Node newNode = new Node(newInputNodeID, Node.NodeType.HIDDEN);
+//        genome.addHiddenNode(newNode);
+//
+//        //Create new connection Genes that go from and to the new Node
+//        int inputNode = geneToSplit.getInputNode();
+//        int outputNode = geneToSplit.getOutputNode();
+//        double weight = 1.0;
+//        int innovationNumber = innovationCalculator.getInnovationNumber(inputNode, newInputNodeID);
+//        Gene newGene1 = new Gene(inputNode, newInputNodeID, weight, true, innovationNumber);
+//        genes.add(newGene1);
+//
+//        inputNode = newInputNodeID;
+//        weight = geneToSplit.getWeight();
+//        innovationNumber = innovationCalculator.getInnovationNumber(inputNode, outputNode);
+//        Gene newGene2 = new Gene(inputNode, outputNode, weight, true, innovationNumber);
+//        genes.add(newGene2);
+//    }
+    
+    private void addNewNode(Genome genome) {
 		List<Gene> genes = genome.getGenes();
 		List<Node> inputNodes = genome.getInputNodes();
 		List<Node> outputNodes = genome.getOutputNodes();
