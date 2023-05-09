@@ -81,7 +81,6 @@ public class Population {
 				double fitness = fitnessEvaluator.calculateFitness(genome);
 				genome.setFitness(fitness);
 			}
-			System.out.println(genomes.size());
 
 			// Speciate the genomes
 			speciate();
@@ -180,7 +179,7 @@ public class Population {
 			// speciesSharingThreshold is another customizable parameter for the algoritm, 3.0 is
 			// chosen arbitrarily
 			if (!addedToExistingSpecies) {
-				Species newSpecies = new Species(nextSpeciesId++, genome);
+				Species newSpecies = new Species(nextSpeciesId++, genome, speciesSharingThreshold);
 				newSpecies.addGenome(genome);
 				speciesList.add(newSpecies);
 			}

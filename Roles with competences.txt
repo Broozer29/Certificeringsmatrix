@@ -1,49 +1,49 @@
 Role: java developer
-Competence: html with a TF-IDF score of: 15.442743623895398 
-Competence: javascript with a TF-IDF score of: 6.522119386085129 
-Competence: uml with a TF-IDF score of: 6.023620983852793 
-Competence: git with a TF-IDF score of: 4.139766654137703 
-Competence: plsql with a TF-IDF score of: 1.0026160582155275 
+Competence: plsql with a TF-IDF score of: 9.333679751631925 
+Competence: sql with a TF-IDF score of: 2.884072573837398 
+Competence: java with a TF-IDF score of: 2.152807756743795 
+Competence: mysql with a TF-IDF score of: 1.9385454121197243 
+Competence: javascript with a TF-IDF score of: 0.6576505309497951 
 
 Role: net developer
-Competence: html with a TF-IDF score of: 15.442743623895398 
-Competence: javascript with a TF-IDF score of: 6.522119386085129 
-Competence: git with a TF-IDF score of: 4.139766654137703 
-Competence: net with a TF-IDF score of: 3.8128790831935793 
-Competence: c with a TF-IDF score of: 3.7354359415345346 
+Competence: plsql with a TF-IDF score of: 9.333679751631925 
+Competence: sql with a TF-IDF score of: 2.884072573837398 
+Competence: java with a TF-IDF score of: 2.152807756743795 
+Competence: mysql with a TF-IDF score of: 1.9385454121197243 
+Competence: javascript with a TF-IDF score of: 0.6576505309497951 
 
 Role: python developer
-Competence: html with a TF-IDF score of: 15.442743623895398 
-Competence: javascript with a TF-IDF score of: 6.522119386085129 
-Competence: git with a TF-IDF score of: 4.139766654137703 
-Competence: net with a TF-IDF score of: 3.8128790831935793 
-Competence: plsql with a TF-IDF score of: 1.0026160582155275 
+Competence: plsql with a TF-IDF score of: 9.333679751631925 
+Competence: sql with a TF-IDF score of: 2.884072573837398 
+Competence: java with a TF-IDF score of: 2.152807756743795 
+Competence: mysql with a TF-IDF score of: 1.9385454121197243 
+Competence: javascript with a TF-IDF score of: 0.6576505309497951 
 
 Role: rust developer
-Competence: plsql with a TF-IDF score of: 1.0026160582155275 
+Competence: plsql with a TF-IDF score of: 9.333679751631925 
+Competence: mysql with a TF-IDF score of: 1.9385454121197243 
 
 Role: php developer
-Competence: html with a TF-IDF score of: 15.442743623895398 
-Competence: javascript with a TF-IDF score of: 6.522119386085129 
-Competence: git with a TF-IDF score of: 4.139766654137703 
-Competence: net with a TF-IDF score of: 3.8128790831935793 
-Competence: plsql with a TF-IDF score of: 1.0026160582155275 
+Competence: plsql with a TF-IDF score of: 9.333679751631925 
+Competence: sql with a TF-IDF score of: 2.884072573837398 
+Competence: java with a TF-IDF score of: 2.152807756743795 
+Competence: mysql with a TF-IDF score of: 1.9385454121197243 
+Competence: javascript with a TF-IDF score of: 0.6576505309497951 
 
 Role: backend developer
-Competence: html with a TF-IDF score of: 15.442743623895398 
-Competence: javascript with a TF-IDF score of: 6.522119386085129 
-Competence: git with a TF-IDF score of: 4.139766654137703 
-Competence: devops with a TF-IDF score of: 3.1711397510277295 
-Competence: plsql with a TF-IDF score of: 1.0026160582155275 
+Competence: plsql with a TF-IDF score of: 9.333679751631925 
+Competence: java with a TF-IDF score of: 2.152807756743795 
+Competence: mysql with a TF-IDF score of: 1.9385454121197243 
+Competence: javascript with a TF-IDF score of: 0.6576505309497951 
 
 Role: frontend developer
-Competence: html with a TF-IDF score of: 15.442743623895398 
-Competence: javascript with a TF-IDF score of: 6.522119386085129 
-Competence: git with a TF-IDF score of: 4.139766654137703 
-Competence: net with a TF-IDF score of: 3.8128790831935793 
-Competence: plsql with a TF-IDF score of: 1.0026160582155275 
+Competence: plsql with a TF-IDF score of: 9.333679751631925 
+Competence: sql with a TF-IDF score of: 2.884072573837398 
+Competence: java with a TF-IDF score of: 2.152807756743795 
+Competence: mysql with a TF-IDF score of: 1.9385454121197243 
+Competence: javascript with a TF-IDF score of: 0.6576505309497951 
 
 Role: database manager
-Competence: apr with a TF-IDF score of: 2.366940043970646 
+Competence: apr with a TF-IDF score of: 1.344907080674051 
 Competence: omschrijving with a TF-IDF score of: 6.032712417232486E-4 
 

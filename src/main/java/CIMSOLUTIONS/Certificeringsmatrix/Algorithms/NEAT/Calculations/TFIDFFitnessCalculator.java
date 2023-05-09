@@ -24,101 +24,46 @@ public class TFIDFFitnessCalculator {
 	 *		The amount of bonus points added to a Biased word. (The lower the amount of added bonus points, the better)
 	 */
 	
-	
-//	public double calculateFitness(Genome genome) {
-//	    // Adjust the wordscores in a Genome
-//	    LinkedHashMap<String, Double> adjustedWordScores = genome.adjustWordScores(wordScores, biasedWords);
-//
-//	    // Calculate the percentage of words from topAdjustedWordScores present in biasedWords
-//	    int matchingWords = 0;
-//	    int totalWords = 0;
-//	    for (Map.Entry<String, Double> entry : adjustedWordScores.entrySet()) {
-//	        if (totalWords >= wordsForFitnessCalculationAmount) {
-//	            break;
-//	        }
-//
-//	        if (biasedWords.contains(entry.getKey())) {
-//	            matchingWords++;
-//	        }
-//	        totalWords++;
-//	    }
-//
-//	    double matchPercentage = (double) matchingWords / totalWords;
-////	    System.out.println("Match percentage :" + matchPercentage + " Matching words: " + matchingWords
-////	            + " Total words: " + totalWords);
-//
-//	    // Calculate the total bonus points added
-//	    double totalBonusPoints = 0;
-//	    for (Map.Entry<String, Double> entry : adjustedWordScores.entrySet()) {
-//	        String word = entry.getKey();
-//	        double adjustedScore = entry.getValue();
-//	        double originalScore = wordScores.get(word);
-//	        if (biasedWords.contains(word)) {
-//	            totalBonusPoints += (adjustedScore - originalScore);
-//	        }
-//	    }
-//
-//	    // Calculate the fitness score based on the given criteria
-//	    double baseFitness = 1 / (1 + totalBonusPoints);
-//
-//	    if (matchPercentage >= 0.75) {
-//	        return baseFitness;
-//	    } else {
-//	        return matchPercentage * baseFitness;
-//	    }
-//	}
-	
-	
-	
 	public double calculateFitness(Genome genome) {
-		// Adjust the wordscores in a Genome
-		// The wordscores MUST be ordered in descending order. This happens in
-		// adjustWordScores.
-		LinkedHashMap<String, Double> adjustedWordScores = genome.adjustWordScores(wordScores, biasedWords);
-		// Select the X amount of highest scoring words and use those for fitness calculation
-		LinkedHashMap<String, Double> topAdjustedWordScores = new LinkedHashMap<>();
-		int count = 0;
-		for (Map.Entry<String, Double> entry : adjustedWordScores.entrySet()) {
-			if (count >= wordsForFitnessCalculationAmount) {
-				break;
-			}
+	    // Adjust the wordscores in a Genome
+	    LinkedHashMap<String, Double> adjustedWordScores = genome.adjustWordScores(wordScores, biasedWords);
 
-			topAdjustedWordScores.put(entry.getKey(), entry.getValue());
-			count++;
-		}
-		// Calculate the percentage of words from biasedWords present in topAdjustedWordScores
+	    // Calculate the percentage of words from topAdjustedWordScores present in biasedWords
+	    int matchingWords = 0;
+	    int totalWords = 0;
+	    for (Map.Entry<String, Double> entry : adjustedWordScores.entrySet()) {
+	        if (totalWords >= wordsForFitnessCalculationAmount) {
+	            break;
+	        }
 
-		int matchingWords = 0;
-		for (String word : biasedWords) {
-			if (topAdjustedWordScores.containsKey(word)) {
-				matchingWords++;
-			}
-		}
+	        if (biasedWords.contains(entry.getKey())) {
+	            matchingWords++;
+	        }
+	        totalWords++;
+	    }
 
-		double matchPercentage = (double) matchingWords / biasedWords.size();
-//		System.out.println("Match percentage :" + matchPercentage + " Matching words: " + matchingWords
-//				+ " Biased Words size: " + biasedWords.size());
-		// Calculate the total bonus points added
-		double totalBonusPoints = 0;
-		for (Map.Entry<String, Double> entry : topAdjustedWordScores.entrySet()) {
-			String word = entry.getKey();
-			double adjustedScore = entry.getValue();
-			double originalScore = wordScores.get(word);
-			if (biasedWords.contains(word)) {
-				totalBonusPoints += (adjustedScore - originalScore);
-			}
-		}
+	    double matchPercentage = (double) matchingWords / totalWords;
+//	    System.out.println("Match percentage :" + matchPercentage + " Matching words: " + matchingWords
+//	            + " Total words: " + totalWords);
 
-		// Calculate the fitness score based on the given criteria
-		// Note: the fitness calculation is completely arbitrary. However, as long as there is
-		// a difference between
-		// genomes that have a higher and lower than 75% match score, the algorithm will work.
-		double baseFitness = 1 / (1 + totalBonusPoints);
+	    // Calculate the total bonus points added
+	    double totalBonusPoints = 0;
+	    for (Map.Entry<String, Double> entry : adjustedWordScores.entrySet()) {
+	        String word = entry.getKey();
+	        double adjustedScore = entry.getValue();
+	        double originalScore = wordScores.get(word);
+	        if (biasedWords.contains(word)) {
+	            totalBonusPoints += (adjustedScore - originalScore);
+	        }
+	    }
 
-		if (matchPercentage >= 0.75) {
-			return baseFitness;
-		} else {
-			return matchPercentage * baseFitness;
-		}
+	    // Calculate the fitness score based on the given criteria
+	    double baseFitness = 1 / (1 + totalBonusPoints);
+
+	    if (matchPercentage >= 0.75) {
+	        return baseFitness;
+	    } else {
+	        return matchPercentage * baseFitness;
+	    }
 	}
 }
