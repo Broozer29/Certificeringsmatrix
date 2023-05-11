@@ -52,7 +52,7 @@ public class Species {
         }
     }
 
-    
+    //Selects the best performing Genomes or random Genomes for crossover
     public List<Genome> performSelection(int numberOfOffspring, double randomSelectionProb) {
         List<Genome> selectedGenomes = new ArrayList<>();
         double totalSharedFitness = getSharedFitnessSum();

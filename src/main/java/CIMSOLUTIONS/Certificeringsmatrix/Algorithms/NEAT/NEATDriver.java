@@ -7,7 +7,7 @@ import java.util.List;
 
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.Crossoverseer;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.GenomeCompatibilityCalculator;
-import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.TFIDFFitnessCalculator;
+import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.GenomeFitnessCalculator;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.Mutator;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Genome.Genome;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Population.Population;
@@ -24,6 +24,7 @@ public class NEATDriver {
 	private int generations = 0;
 	private int speciesSharingThreshold = 0;
 	private int topXWordsUsedForFitnessCalculation = 0;
+	private int amountOfOffspring = 0;
 
 	private double excessGeneImportance = 0.0; /*- The importance of excess genes for calculating the similarity of 2 Genomes */
 	private double disjointGeneImportance = 0.0; /*- The importance of disjoint genes for calculating the similarity of 2 Genomes */
@@ -35,11 +36,12 @@ public class NEATDriver {
 	private double newNodeMutationRate = 0.00;
 
 	private double mutationStrength = 0;
+	private int bonusPointsWeightSubtractor = 0;
 
 	private Mutator mutator = null;
 	private Crossoverseer crossoverseer = null;
 	private GenomeCompatibilityCalculator genomeCompatabilityCalculator = null;
-	private TFIDFFitnessCalculator fitnessCalculator = null;
+	private GenomeFitnessCalculator fitnessCalculator = null;
 
 	private List<String> words = new ArrayList<String>();
 	private List<String> biasedWords = new ArrayList<String>();
@@ -61,17 +63,19 @@ public class NEATDriver {
 		this.newConnectionMutationRate = neatConfig.getNewConnectionMutationRate();
 		this.newNodeMutationRate = neatConfig.getNewNodeMutationRate();
 		this.mutationStrength = neatConfig.getMutationStrength();
+		this.amountOfOffspring = neatConfig.getMinimumAmountOfOffspring();
+		this.bonusPointsWeightSubtractor = neatConfig.getBonusPointsWeightSubtractor();
 	}
 
 	public void initDriverWords(LinkedHashMap<String, Double> wordScores, List<String> biasedWords) {
 		this.wordScores = wordScores;
 		this.biasedWords = biasedWords;
-		
+
 		this.words = new ArrayList<>(wordScores.keySet());
 	}
 
 	public void initNEATAlgorithms() {
-		fitnessCalculator = new TFIDFFitnessCalculator(wordScores, biasedWords, topXWordsUsedForFitnessCalculation);
+		fitnessCalculator = new GenomeFitnessCalculator(wordScores, biasedWords, topXWordsUsedForFitnessCalculation, bonusPointsWeightSubtractor);
 
 		genomeCompatabilityCalculator = new GenomeCompatibilityCalculator(excessGeneImportance, disjointGeneImportance,
 				weightImportance);
@@ -80,21 +84,19 @@ public class NEATDriver {
 		crossoverseer = new Crossoverseer();
 	}
 
-
-
 	public void importPopulation() {
 
 	}
 
 	public void createPopulation() {
 		this.population = new Population(populationSize, neuronInputSize, neuronOutputSize, speciesSharingThreshold,
-				words, biasedWords, genomeCompatabilityCalculator, mutator);
+				words, biasedWords, genomeCompatabilityCalculator, mutator, amountOfOffspring);
 	}
-	
+
 	// Evolve the population for a given number of generations
 	public void evolvePopulation() {
 		population.evolvePopulation(generations, fitnessCalculator, crossoverseer);
-		
+
 		// Get the best performing genome after the specified number of generations
 		bestPerformingGenome = population.getBestGenome();
 		System.out.println("Best performing genome after " + generations + " generations:");
@@ -104,7 +106,6 @@ public class NEATDriver {
 	public Genome getBestPerformingGenome() {
 		return population.getBestGenome();
 	}
-
 
 	public boolean isReadyForUse() {
 		if (words.isEmpty() || words.size() == 0) {

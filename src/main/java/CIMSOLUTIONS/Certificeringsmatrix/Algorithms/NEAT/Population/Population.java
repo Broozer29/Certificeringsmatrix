@@ -8,7 +8,7 @@ import java.util.Random;
 
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.Crossoverseer;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.GenomeCompatibilityCalculator;
-import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.TFIDFFitnessCalculator;
+import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.GenomeFitnessCalculator;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.Mutator;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Genome.Genome;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.TFIDF.TFIDFDriver;
@@ -23,6 +23,8 @@ public class Population {
 	private int nextSpeciesId;
 	private GenomeCompatibilityCalculator compatibilityCalculator;
 	private double survivalRate;
+	private int minimumAmountOfOffspring;
+
 	// The speciesThreshold determines how similar genomes have to be, to be seen as the
 	// same species
 	// Higher result in fewer species with more genomes, lower values result in more
@@ -32,7 +34,7 @@ public class Population {
 	// Constructor used for creating brand new Genomes
 	public Population(int populationSize, int inputSize, int outputSize, int speciesSharingThreshold,
 			List<String> words, List<String> biasedWords, GenomeCompatibilityCalculator compatibilityCalculator,
-			Mutator mutator) {
+			Mutator mutator, int amountOfOffspring) {
 		this.populationSize = populationSize;
 		this.genomes = new ArrayList<Genome>();
 		this.mutator = mutator;
@@ -44,10 +46,11 @@ public class Population {
 		this.speciesSharingThreshold = speciesSharingThreshold;
 		// The top 50% of Genomes will survive, the rest won't.
 		this.survivalRate = 0.5;
+		this.minimumAmountOfOffspring = amountOfOffspring;
 
 		// Initialize the population with random genomes
 		for (int i = 0; i < populationSize; i++) {
-			Genome newGenome =  new Genome(inputSize, outputSize, words, biasedWords);
+			Genome newGenome = new Genome(inputSize, outputSize, words, biasedWords);
 			mutator.mutate(newGenome);
 			genomes.add(newGenome);
 		}
@@ -55,7 +58,7 @@ public class Population {
 
 	// Constructor used for imported Genomes
 	public Population(int populationSize, Genome importedGenome, int speciesSharingThreshold, List<String> biasedWords,
-			GenomeCompatibilityCalculator compatibilityCalculator, Mutator mutator) {
+			GenomeCompatibilityCalculator compatibilityCalculator, Mutator mutator, int amountOfOffspring) {
 		this.populationSize = populationSize;
 		this.genomes = new ArrayList<Genome>();
 		this.mutator = mutator;
@@ -64,6 +67,7 @@ public class Population {
 		this.speciesList = new ArrayList<Species>();
 		this.compatibilityCalculator = compatibilityCalculator;
 		this.speciesSharingThreshold = speciesSharingThreshold;
+		this.minimumAmountOfOffspring = amountOfOffspring;
 
 		// The top 50% of Genomes will survive, the rest won't.
 		this.survivalRate = 0.5;
@@ -74,7 +78,7 @@ public class Population {
 		}
 	}
 
-	public void evolvePopulation(int generations, TFIDFFitnessCalculator fitnessEvaluator,
+	public void evolvePopulation(int generations, GenomeFitnessCalculator fitnessEvaluator,
 			Crossoverseer crossoverseer) {
 		for (int generation = 0; generation < generations; generation++) {
 			System.out.println("      > New generation started: " + generation);
@@ -107,20 +111,22 @@ public class Population {
 				// Calculate the number of offspring for each species based on its shared fitness
 				int numberOfOffspring = (int) (species.getSharedFitnessSum() / getTotalSharedFitnessSum()
 						* (populationSize - speciesList.size()));
-				if(numberOfOffspring < 2) {
-					numberOfOffspring = 2;
+
+				// If the calculated number of offspring is lower than the minimum, change to minimum
+				if (numberOfOffspring < minimumAmountOfOffspring) {
+					numberOfOffspring = minimumAmountOfOffspring;
 				}
-				
-				//Select the best performing Genome with 50% chance or a random genome with 50% chance
-				// SHOULD BE A CONFIGURATION PARAMETER 
+
+				// Select the best performing Genome with X% chance of selecting a random genome
+				// SHOULD BE A CONFIGURATION PARAMETER
 				List<Genome> selectedGenomes = species.performSelection(numberOfOffspring, 0.5);
-				// Create offspring through crossover and mutation
-				
-				for(Genome gen : selectedGenomes) {
+
+				for (Genome gen : selectedGenomes) {
 					System.out.println(" Parents fitness: " + gen.getFitness());
 				}
-				
-				
+
+				// Create offspring through crossover and mutation based on the selectedGenomes
+
 				for (int i = 0; i < numberOfOffspring; i++) {
 					if (selectedGenomes.size() >= 2) {
 						Genome parent1 = selectedGenomes.get(random.nextInt(selectedGenomes.size()));

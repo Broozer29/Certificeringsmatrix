@@ -6,22 +6,25 @@ import java.util.Map;
 
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Genome.Genome;
 
-public class TFIDFFitnessCalculator {
+public class GenomeFitnessCalculator {
 	private LinkedHashMap<String, Double> wordScores;
 	private List<String> biasedWords;
 	private int wordsForFitnessCalculationAmount;
+	private int bonusPointsWeightSubtractor;
 
-	public TFIDFFitnessCalculator(LinkedHashMap<String, Double> wordScores, List<String> biasedWords,
-			int wordsForFitnessCalculationCount) {
+	public GenomeFitnessCalculator(LinkedHashMap<String, Double> wordScores, List<String> biasedWords,
+			int wordsForFitnessCalculationCount, int bonusPointsScaler) {
 		this.wordScores = wordScores;
 		this.biasedWords = biasedWords;
 		this.wordsForFitnessCalculationAmount = wordsForFitnessCalculationCount;
+		this.bonusPointsWeightSubtractor = bonusPointsScaler;
 	}
 
 	/*- This method calculates the fitness of a Genome based on the following:
-	 *		The "wordsForFitnessCalculationCount" amount of words that are Biased Words. (75% or higher gets a greatly increased score)
-	 *			Note: The above criteria makes the assumption the words and scores are sorted in descending order. 
-	 *		The amount of bonus points added to a Biased word. (The lower the amount of added bonus points, the better)
+	 *		The "wordsForFitnessCalculationCount" amount of words in "adjustedWordScores" that are Biased Words. (75% or higher gets a greatly increased score)	
+	 *		The amount of bonus points added to a Biased word. (The lower the amount of added bonus points, the higher the score)
+	 * NOTE: A Genome CAN recieve a negative score. This happens because it is possible for Genomes to subtract points from words as well. 
+	 * 		This behaviour allows Genomes to correct themselves, but also allows negative scores.
 	 */
 	
 	public double calculateFitness(Genome genome) {
@@ -57,13 +60,20 @@ public class TFIDFFitnessCalculator {
 	        }
 	    }
 
-	    // Calculate the fitness score based on the given criteria
-	    double baseFitness = 1 / (1 + totalBonusPoints);
+	    //The scaling factor is how much the Genome gets punished for adding unnecesary bonus points
+	    
+	    double baseFitness = 1 / (1 + Math.abs(totalBonusPoints / bonusPointsWeightSubtractor));
 
+	    double finalFitness;
 	    if (matchPercentage >= 0.75) {
-	        return baseFitness;
+	        finalFitness = baseFitness;
 	    } else {
-	        return matchPercentage * baseFitness;
+	        finalFitness = matchPercentage * baseFitness;
 	    }
+
+	    // Ensure the final fitness score is non-negative
+	    finalFitness += Math.abs(Math.min(0, finalFitness));
+
+	    return finalFitness;
 	}
 }
