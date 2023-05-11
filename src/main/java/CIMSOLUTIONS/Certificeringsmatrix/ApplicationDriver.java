@@ -31,7 +31,7 @@ public class ApplicationDriver {
 	private WordVectorMatrix matrix = null;
 	private RoleLoader roleLoader = null;
 	private BiasedWordsLoader biasLoader = null;
-	private NEATDriver neatInstance = null;
+	private NEATDriver neatDriver = null;
 
 	private static ApplicationDriver instance = new ApplicationDriver();
 
@@ -45,17 +45,21 @@ public class ApplicationDriver {
 
 	/*- Loads & reads all files required for the program to function */
 	public void loadAndReadFiles() {
-		biasLoader = BiasedWordsLoader.getInstance();
+		System.out.println("   > Loading and reading Biased Words, then storing them in StorageManager");
+		biasLoader = new BiasedWordsLoader();
 		biasLoader.loadAndReadBiasedWords();
 
+		System.out.println("   > Loading, reading & creating Documents (Aanvragen & CV's) then storing them in StorageManager");
 		loadDriver = DocumentLoadingDriver.getInstance();
 		loadDriver.loadDocuments();
 
-		roleLoader = RoleLoader.getInstance();
+		System.out.println("   > Loading, reading & creating Roles then storing them in StorageManager");
+		roleLoader = new RoleLoader();
 		roleLoader.loadAndReadRoles();
 
+		System.out.println("   > Filtering all loaded words so there are no duplicates for the upcoming algorithms");
 		storageManager = StorageManager.getInstance();
-		storageManager.populateStorageManager();
+		storageManager.filterDuplicateWords();
 
 		
 	}
@@ -68,33 +72,40 @@ public class ApplicationDriver {
 
 	/*- Creates a Word2vec matrix from individual words from the loaded Documents*/
 	public void performHC() {
+		System.out.println("   > Creating a Vector Matrix of all words loaded from the created Documents");
 		matrix = WordVectorMatrix.getInstance();
 		matrix.createWordVectorMatrix();
 	}
 
 	/*- Searches for additional biased words in the loaded Documents*/
 	public void findSimilarBiasedWords() {
+		System.out.println("   > Finding words that are adjacent to stored Biased Words and add them to the Biased Words for later algorithms");
 		storageManager = StorageManager.getInstance();
 		storageManager.calculatedAdjacentBiasedWords();
 	}
 
 	/*-Starts the NEAT algorithm for training Genomes and returns the best performing Genome afterwards*/
 	public Genome trainNewNeuralNetworks() {
+		System.out.println("   > Acquiring data from StorageManager required for the NEAT algorithm");
 		LinkedHashMap<String, Double> wordScores = storageManager.getWordScores();
 		List<String> biasedWords = storageManager.getAllBiasedWords();
 		List<String> words = new ArrayList<>(wordScores.keySet());
 
+		System.out.println("   > Creating a NEATConfiguration for the NEAT algorithm");
 		NEATConfiguration neatConfig = new NEATConfiguration();
 		neatConfig.setNeuronInputSize(words.size());
-		neatConfig = setDefaultNEATConfigurations(neatConfig);
-		neatInstance = new NEATDriver(neatConfig);
+		neatConfig.setDefaultNEATConfigurations();
+		neatDriver = new NEATDriver(neatConfig);
 
-		neatInstance.initDriverWords(wordScores, biasedWords);
-		neatInstance.initNEATAlgorithms();
-		if (neatInstance.isReadyForUse()) {
-			neatInstance.createPopulation();
-			neatInstance.evolvePopulation();
-			return neatInstance.getBestPerformingGenome();
+		System.out.println("   > Initializing the NEATDriver with words & their TF-IDF scores and all Biased Words");
+		neatDriver.initDriverWords(wordScores, biasedWords);
+		neatDriver.initNEATAlgorithms();
+		if (neatDriver.isReadyForUse()) {
+			System.out.println("   > Creating a population of Genomes");
+			neatDriver.createPopulation();
+			System.out.println("   > Evolving the population of Genomes corresponding with the given NEATConfigurations");
+			neatDriver.evolvePopulation();
+			return neatDriver.getBestPerformingGenome();
 		} else
 			return null;
 	}
@@ -104,52 +115,39 @@ public class ApplicationDriver {
 	 *  Use this method for training imported Genomes
 	 * */
 	public Genome trainExistingNeuralNetwork(Genome importedGenome) {
+		System.out.println("   > Acquiring data from the imported Genome required for the NEAT algorithm");
 		LinkedHashMap<String, Double> wordScores = importedGenome.getScores();
 		List<String> biasedWords = importedGenome.getBiasedWords();
 		List<String> words = new ArrayList<>(wordScores.keySet());
 
+		System.out.println("   > Creating a NEATConfiguration for the NEAT algorithm");
 		NEATConfiguration neatConfig = new NEATConfiguration();
 		neatConfig.setNeuronInputSize(words.size());
-		neatConfig = setDefaultNEATConfigurations(neatConfig);
-		neatInstance = new NEATDriver(neatConfig);
+		neatConfig.setDefaultNEATConfigurations();
+		neatDriver = new NEATDriver(neatConfig);
 
-		neatInstance.initDriverWords(wordScores, biasedWords);
-		neatInstance.initNEATAlgorithms();
-		if (neatInstance.isReadyForUse()) {
-			neatInstance.createPopulation();
-			neatInstance.evolvePopulation();
-			return neatInstance.getBestPerformingGenome();
+		System.out.println("   > Initializing the NEATDriver with words & their TF-IDF scores and all Biased Words loaded from the Genome");
+		neatDriver.initDriverWords(wordScores, biasedWords);
+		neatDriver.initNEATAlgorithms();
+		if (neatDriver.isReadyForUse()) {
+			System.out.println("   > Creating a population of Genomes that are identical to the given Genome");
+			neatDriver.createPopulation();
+			System.out.println("   > Evolving the population of Genomes corresponding with the given NEATConfigurations");
+			neatDriver.evolvePopulation();
+			return neatDriver.getBestPerformingGenome();
 		} else
 			return null;
 	}
 
-	// Sets default configurations for a NEAT instance
-	private NEATConfiguration setDefaultNEATConfigurations(NEATConfiguration neatConfig) {
-		neatConfig.setNeuronOutputSize(5);
-		neatConfig.setPopulationSize(5);
-		neatConfig.setGenerations(1);
-		neatConfig.setSpeciesSharingThreshold(3);
-		neatConfig.setTopXWordsUsedForFitnessCalculation(30);
-
-		neatConfig.setExcessGeneImportance(1.0);
-		neatConfig.setDisjointGeneImportance(0.4);
-		neatConfig.setWeightImportance(0.4);
-
-		neatConfig.setWeightMutationRate(0.8);
-		neatConfig.setNewConnectionMutationRate(0.05);
-		neatConfig.setNewNodeMutationRate(0.03);
-
-		neatConfig.setMutationStrength(1.0);
-
-		return neatConfig;
-	}
 
 	/*-Combines competences (individual words with scores) with Roles using the Word2vec matrix's similarity methods*/
 	public CertificeringsMatrix combineCompetencesWithRoles(Genome bestPerformingGenome, int maximumAmountOfCompetences,
 			double similarityThreshold) {
+		System.out.println("   > Creating " + maximumAmountOfCompetences + " competences from the highest scored words of a Genome");
 		List<Competence> competences = bestPerformingGenome.createCompetences(maximumAmountOfCompetences);
-		List<Role> roles = roleLoader.getRoles();
+		List<Role> roles = storageManager.getAllRoles();
 		
+		System.out.println("   > Combinging Roles and Competences (implementatie moet nog veranderd worden, pas dit bericht aan zodra dat gedaan is)");
 		CompetenceRoleCombiner compRoleCombiner = new CompetenceRoleCombiner();
 		CertificeringsMatrix certificeringsMatrix = compRoleCombiner.addCompetencesToRoles(competences, roles, similarityThreshold);
 		certificeringsMatrix.sortCompetencesBelongingToRoles();

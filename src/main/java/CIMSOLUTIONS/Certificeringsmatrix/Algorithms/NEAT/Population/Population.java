@@ -8,7 +8,7 @@ import java.util.Random;
 
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.Crossoverseer;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.GenomeCompatibilityCalculator;
-import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.IFTDFFitnessCalculator;
+import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.GenomeFitnessCalculator;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Calculations.Mutator;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.NEAT.Genome.Genome;
 import CIMSOLUTIONS.Certificeringsmatrix.Algorithms.TFIDF.TFIDFDriver;
@@ -23,6 +23,8 @@ public class Population {
 	private int nextSpeciesId;
 	private GenomeCompatibilityCalculator compatibilityCalculator;
 	private double survivalRate;
+	private int minimumAmountOfOffspring;
+
 	// The speciesThreshold determines how similar genomes have to be, to be seen as the
 	// same species
 	// Higher result in fewer species with more genomes, lower values result in more
@@ -32,7 +34,7 @@ public class Population {
 	// Constructor used for creating brand new Genomes
 	public Population(int populationSize, int inputSize, int outputSize, int speciesSharingThreshold,
 			List<String> words, List<String> biasedWords, GenomeCompatibilityCalculator compatibilityCalculator,
-			Mutator mutator) {
+			Mutator mutator, int amountOfOffspring) {
 		this.populationSize = populationSize;
 		this.genomes = new ArrayList<Genome>();
 		this.mutator = mutator;
@@ -44,16 +46,19 @@ public class Population {
 		this.speciesSharingThreshold = speciesSharingThreshold;
 		// The top 50% of Genomes will survive, the rest won't.
 		this.survivalRate = 0.5;
+		this.minimumAmountOfOffspring = amountOfOffspring;
 
 		// Initialize the population with random genomes
 		for (int i = 0; i < populationSize; i++) {
-			genomes.add(new Genome(inputSize, outputSize, words, biasedWords));
+			Genome newGenome = new Genome(inputSize, outputSize, words, biasedWords);
+			mutator.mutate(newGenome);
+			genomes.add(newGenome);
 		}
 	}
 
 	// Constructor used for imported Genomes
-	public Population(int populationSize, Genome importedGenome, int speciesSharingThreshold,
-			List<String> biasedWords, GenomeCompatibilityCalculator compatibilityCalculator, Mutator mutator) {
+	public Population(int populationSize, Genome importedGenome, int speciesSharingThreshold, List<String> biasedWords,
+			GenomeCompatibilityCalculator compatibilityCalculator, Mutator mutator, int amountOfOffspring) {
 		this.populationSize = populationSize;
 		this.genomes = new ArrayList<Genome>();
 		this.mutator = mutator;
@@ -62,6 +67,7 @@ public class Population {
 		this.speciesList = new ArrayList<Species>();
 		this.compatibilityCalculator = compatibilityCalculator;
 		this.speciesSharingThreshold = speciesSharingThreshold;
+		this.minimumAmountOfOffspring = amountOfOffspring;
 
 		// The top 50% of Genomes will survive, the rest won't.
 		this.survivalRate = 0.5;
@@ -72,14 +78,15 @@ public class Population {
 		}
 	}
 
-	public void evolvePopulation(int generations, IFTDFFitnessCalculator fitnessEvaluator,
+	public void evolvePopulation(int generations, GenomeFitnessCalculator fitnessEvaluator,
 			Crossoverseer crossoverseer) {
 		for (int generation = 0; generation < generations; generation++) {
-			System.out.println("New generation started: " + generation);
+			System.out.println("      > New generation started: " + generation);
 			// Evaluate the fitness of each genome
 			for (Genome genome : genomes) {
 				double fitness = fitnessEvaluator.calculateFitness(genome);
 				genome.setFitness(fitness);
+				System.out.println(genome.getFitness());
 			}
 
 			// Speciate the genomes
@@ -96,27 +103,41 @@ public class Population {
 				// Preserve the best performing genome from each species
 				Genome bestInSpecies = species.getGenomes().stream().max(Comparator.comparingDouble(Genome::getFitness))
 						.orElse(null);
-				nextGeneration.add(bestInSpecies);
+
+				if (bestInSpecies != null) {
+					nextGeneration.add(bestInSpecies);
+				}
 
 				// Calculate the number of offspring for each species based on its shared fitness
 				int numberOfOffspring = (int) (species.getSharedFitnessSum() / getTotalSharedFitnessSum()
 						* (populationSize - speciesList.size()));
-				List<Genome> selectedGenomes = species.performSelection(numberOfOffspring);
 
-				// Create offspring through crossover and mutation
+				// If the calculated number of offspring is lower than the minimum, change to minimum
+				if (numberOfOffspring < minimumAmountOfOffspring) {
+					numberOfOffspring = minimumAmountOfOffspring;
+				}
+
+				// Select the best performing Genome with X% chance of selecting a random genome
+				// SHOULD BE A CONFIGURATION PARAMETER
+				List<Genome> selectedGenomes = species.performSelection(numberOfOffspring, 0.5);
+
+				for (Genome gen : selectedGenomes) {
+					System.out.println(" Parents fitness: " + gen.getFitness());
+				}
+
+				// Create offspring through crossover and mutation based on the selectedGenomes
+
 				for (int i = 0; i < numberOfOffspring; i++) {
 					if (selectedGenomes.size() >= 2) {
 						Genome parent1 = selectedGenomes.get(random.nextInt(selectedGenomes.size()));
 						Genome parent2 = selectedGenomes.get(random.nextInt(selectedGenomes.size()));
 						Genome offspring = crossoverseer.crossover(parent1, parent2);
 
-						System.out.println("Parent 1 fitness: " + parent1.getFitness());
-						System.out.println("Parent 2 fitness: " + parent2.getFitness());
-
-						System.out.println("Child fitness before mutate: " + offspring.getFitness());
+						System.out.println("      > Parent 1 fitness: " + parent1.getFitness());
+						System.out.println("      > Parent 2 fitness: " + parent2.getFitness());
 						mutator.mutate(offspring);
 						offspring.setFitness(fitnessEvaluator.calculateFitness(offspring));
-						System.out.println("Child fitness after mutate: " + offspring.getFitness());
+						System.out.println("      > Child fitness after random mutation: " + offspring.getFitness());
 						System.out.println("\n");
 						nextGeneration.add(offspring);
 					} else {
@@ -174,7 +195,7 @@ public class Population {
 			// speciesSharingThreshold is another customizable parameter for the algoritm, 3.0 is
 			// chosen arbitrarily
 			if (!addedToExistingSpecies) {
-				Species newSpecies = new Species(nextSpeciesId++, genome, speciesSharingThreshold);
+				Species newSpecies = new Species(nextSpeciesId++, genome);
 				newSpecies.addGenome(genome);
 				speciesList.add(newSpecies);
 			}

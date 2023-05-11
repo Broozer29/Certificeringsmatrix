@@ -11,16 +11,14 @@ public class Species {
     private int id;
     private List<Genome> genomes;
     private Genome representative;
-    private double speciesSharingThreshold;
     private double sharedFitnessSum;
     private Random random = new Random();
     
-    public Species(int id, Genome representative, double speciesSharingThreshold) {
+    public Species(int id, Genome representative) {
         this.id = id;
         this.representative = representative;
         this.genomes = new ArrayList<>();
         this.sharedFitnessSum = 0;
-        this.speciesSharingThreshold = speciesSharingThreshold;
     }
 
     public int getId() {
@@ -41,7 +39,7 @@ public class Species {
 
     public void addGenome(Genome genome) {
         genomes.add(genome);
-        sharedFitnessSum += genome.getFitness() / speciesSharingThreshold;
+        sharedFitnessSum += genome.getFitness() / genomes.size();
     }
 
     public void clearGenomes() {
@@ -54,36 +52,70 @@ public class Species {
         }
     }
 
-    public void calculateSharedFitnessSum(double speciesSharingThreshold) {
-        sharedFitnessSum = 0;
-        for (Genome genome : genomes) {
-            double sharedFitness = genome.getFitness() / speciesSharingThreshold;
-            sharedFitnessSum += sharedFitness;
-        }
-    }
-    
-    public List<Genome> performSelection(int numberOfOffspring) {
+    //Selects the best performing Genomes or random Genomes for crossover
+    public List<Genome> performSelection(int numberOfOffspring, double randomSelectionProb) {
         List<Genome> selectedGenomes = new ArrayList<>();
-
-        // Calculate the total shared fitness of all Genomes in the species
         double totalSharedFitness = getSharedFitnessSum();
+        List<Double> normalizedFitness = new ArrayList<>();
+        for (Genome genome : genomes) {
+            normalizedFitness.add(genome.getFitness() / totalSharedFitness);
+        }
 
-        // Perform roulette wheel selection to choose Genomes for the next generation
         for (int i = 0; i < numberOfOffspring; i++) {
-            double randomValue = random.nextDouble() * totalSharedFitness;
-            double accumulatedFitness = 0.0;
-
-            for (Genome genome : genomes) {
-                accumulatedFitness += genome.getFitness();
-                if (accumulatedFitness >= randomValue) {
-                    selectedGenomes.add(genome);
-                    break;
+            if (random.nextDouble() < randomSelectionProb) {
+                // Choose a random genome
+                int randomIndex = random.nextInt(genomes.size());
+                selectedGenomes.add(genomes.get(randomIndex));
+            } else {
+                // Perform roulette wheel selection
+                double randomValue = random.nextDouble();
+                double accumulatedFitness = 0.0;
+                int index = 0;
+                for (Double fitness : normalizedFitness) {
+                    accumulatedFitness += fitness;
+                    if (accumulatedFitness >= randomValue) {
+                        selectedGenomes.add(genomes.get(index));
+                        break;
+                    }
+                    index++;
                 }
             }
         }
 
         return selectedGenomes;
     }
+    
+    
+//    public List<Genome> performSelection(int numberOfOffspring) {
+//        List<Genome> selectedGenomes = new ArrayList<>();
+//
+//        // Calculate the total shared fitness of all Genomes in the species
+//        double totalSharedFitness = getSharedFitnessSum();
+//
+//        // Normalize fitness scores
+//        List<Double> normalizedFitness = new ArrayList<>();
+//        for (Genome genome : genomes) {
+//            normalizedFitness.add(genome.getFitness() / totalSharedFitness);
+//        }
+//
+//        // Perform roulette wheel selection to choose Genomes for the next generation
+//        for (int i = 0; i < numberOfOffspring; i++) {
+//            double randomValue = random.nextDouble();
+//            double accumulatedFitness = 0.0;
+//            int index = 0;
+//
+//            for (Double fitness : normalizedFitness) {
+//                accumulatedFitness += fitness;
+//                if (accumulatedFitness >= randomValue) {
+//                    selectedGenomes.add(genomes.get(index));
+//                    break;
+//                }
+//                index++;
+//            }
+//        }
+//
+//        return selectedGenomes;
+//    }
 
     public void applySurvivalSelection(double survivalRate) {
     	// Keep top X% of the individuals, then sort their fitness in descending order and keep the best performing 50%

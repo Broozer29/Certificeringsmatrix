@@ -16,9 +16,6 @@ import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Role;
 public class StorageManager {
 
 	private static StorageManager instance = new StorageManager();
-	private AanvraagStorage aanvraagStorage;
-	private CVStorage cvStorage;
-	private RoleLoader roleLoader;
 	private BiasedWordsLoader biasLoader;
 
 	private LinkedHashMap<String, Double> avgWordScores = new LinkedHashMap<String, Double>();
@@ -28,8 +25,6 @@ public class StorageManager {
 	private List<Role> allRoles = new ArrayList<Role>();
 
 	private StorageManager() {
-		aanvraagStorage = AanvraagStorage.getInstance();
-		cvStorage = CVStorage.getInstance();
 	}
 
 	public static StorageManager getInstance() {
@@ -38,20 +33,7 @@ public class StorageManager {
 
 	// When a storage has loaded files, this function needs to be called
 	// to synchronize the manager with the storages
-	public void populateStorageManager() {
-		allDocuments = new ArrayList<Document>();
-		aanvraagStorage = AanvraagStorage.getInstance();
-		cvStorage = CVStorage.getInstance();
-		roleLoader = RoleLoader.getInstance();
-		biasLoader = BiasedWordsLoader.getInstance();
-
-		for (Document docu : cvStorage.getAllDocuments()) {
-			allDocuments.add(docu);
-		}
-		for (Document docu : aanvraagStorage.getAllAanvragen()) {
-			allDocuments.add(docu);
-		}
-
+	public void filterDuplicateWords() {
 		for (Document docu : allDocuments) {
 			for (String word : docu.getWordsWithinDocument()) {
 				if (!allUniqueWords.contains(word)) {
@@ -59,14 +41,7 @@ public class StorageManager {
 				}
 			}
 		}
-
-		for (Role role : roleLoader.getRoles()) {
-			allRoles.add(role);
-		}
-
-		for (String biasedWord : biasLoader.getOriginalBiasedWords()) {
-			allBiasedWords.add(biasedWord);
-		}
+		
 	}
 
 	public List<String> getAllWords() {
@@ -79,6 +54,42 @@ public class StorageManager {
 
 	public List<String> getAllBiasedWords() {
 		return allBiasedWords;
+	}
+
+	public List<Role> getAllRoles() {
+		return allRoles;
+	}
+
+	public void addRoles(List<Role> roles) {
+		for (Role role : roles) {
+			if (!allRoles.contains(role)) {
+				allRoles.add(role);
+			}
+		}
+	}
+
+	public void addBiasedWords(List<String> biasedWords) {
+		for (String word : biasedWords) {
+			if (!allBiasedWords.contains(word)) {
+				allBiasedWords.add(word);
+			}
+		}
+	}
+
+	public void addDocuments(List<Document> documents) {
+		for (Document docu : documents) {
+			if (!allDocuments.contains(docu)) {
+				allDocuments.add(docu);
+			}
+		}
+	}
+
+	public void addWords(List<String> words) {
+		for (String word : words) {
+			if (!allUniqueWords.contains(word)) {
+				allUniqueWords.add(word);
+			}
+		}
 	}
 
 	public void calculatedAdjacentBiasedWords() {

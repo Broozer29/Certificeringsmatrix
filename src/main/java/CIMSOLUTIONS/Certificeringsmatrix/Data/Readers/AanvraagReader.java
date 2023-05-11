@@ -9,7 +9,6 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
 
-import CIMSOLUTIONS.Certificeringsmatrix.Data.Storage.AanvraagStorage;
 import CIMSOLUTIONS.Certificeringsmatrix.DomainObjects.Document;
 
 public class AanvraagReader {
@@ -23,8 +22,7 @@ public class AanvraagReader {
 	 * the text whilst reading it. It saves sentences and individual words to a new document whilst removing all non-alphabetic characters
 	 * and whitespace
 	 */
-	public void readPFDFile(String filePath, String fileName) {
-		AanvraagStorage aanvragenStorage = AanvraagStorage.getInstance();
+	public Document readPFDFile(String filePath, String fileName) {
 		File file = new File(filePath + fileName);
 		try (PDDocument document = Loader.loadPDF(file)) {
 			Document aanvraagDocument = new Document(fileName);
@@ -70,12 +68,11 @@ public class AanvraagReader {
 				stripper.getText(document);
 			}
 
-			// When finished reading a PDF, add the newly created Document to the storage
-			aanvragenStorage.addAanvraag(aanvraagDocument);
+			return aanvraagDocument;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		return null;
 	}
 
 }

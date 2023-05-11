@@ -11,7 +11,7 @@ public class NEATConfiguration {
 	private int generations = 0; // Number of generations to evolve
 	private int speciesSharingThreshold = 0; // Sharing threshold for speciation
 	private int topXWordsUsedForFitnessCalculation = 0; // The amount of highest scoring words used in the fitness
-
+	private int minimumAmountOfOffspring = 0; // The amount of offspring Genomes created by parent Genomes
 	
 	private double excessGeneImportance = 0.0;
 	private double disjointGeneImportance = 0.0;
@@ -22,10 +22,33 @@ public class NEATConfiguration {
 	private double newNodeMutationRate = 0.00;
 	
 	private double mutationStrength = 0.0;
+	private int bonusPointsWeightSubtractor = 0;
 	
 	
 	public NEATConfiguration() {
 		
+	}
+	
+	// Sets default configurations for a NEAT instance
+	// As long as they are all set and higher than 0 and no negative values, they are valid.
+	public void setDefaultNEATConfigurations() {
+		setNeuronOutputSize(5);
+		setPopulationSize(10);
+		setGenerations(5);
+		setSpeciesSharingThreshold(3);
+		setTopXWordsUsedForFitnessCalculation(30);
+		setMinimumAmountOfOffspring(3);
+
+		setExcessGeneImportance(1.0);
+		setDisjointGeneImportance(0.4);
+		setWeightImportance(0.4);
+
+		setWeightMutationRate(0.8);
+		setNewConnectionMutationRate(0.2);
+		setNewNodeMutationRate(0.2);
+
+		setMutationStrength(1.0);
+		setBonusPointsWeightSubtractor(10);
 	}
 
 
@@ -158,7 +181,20 @@ public class NEATConfiguration {
 		this.mutationStrength = mutationStrength;
 	}
 	
-	
-	
+	public void setMinimumAmountOfOffspring(int amountOfOffspring) {
+		this.minimumAmountOfOffspring = amountOfOffspring;
+	}
+
+	public int getMinimumAmountOfOffspring() {
+		return this.minimumAmountOfOffspring;
+	}
+
+	public int getBonusPointsWeightSubtractor() {
+		return bonusPointsWeightSubtractor;
+	}
+
+	public void setBonusPointsWeightSubtractor(int bonusPointsWeightSubtractor) {
+		this.bonusPointsWeightSubtractor = bonusPointsWeightSubtractor;
+	}
 
 }
