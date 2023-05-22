@@ -26,6 +26,9 @@ public class Genome implements Serializable {
 	private Map<String, Double> adjustments = new HashMap<>();
 	private List<String> biasedWords = new ArrayList<String>();
 	private double fitness;
+	
+	
+	private double averageBonusPointsPerWord;
 
 	public Genome() {
 	}
@@ -129,12 +132,15 @@ public class Genome implements Serializable {
 		}
 
 		this.scores = LinkedHashMapSorter.getInstance().sortByValueDescending(adjustedScores);
-
 		return scores;
 	}
 
 	public List<String> getBiasedWords() {
 		return this.biasedWords;
+	}
+	
+	public void setBiasedWords(List<String> biasedWords) {
+		this.biasedWords = biasedWords;
 	}
 
 	public void setScores(LinkedHashMap<String, Double> scores) {
@@ -198,11 +204,20 @@ public class Genome implements Serializable {
 	public List<Node> getHiddenNodes() {
 		return hiddenNodes;
 	}
+	
 
 	public void addHiddenNode(Node node) {
 		if (!this.hiddenNodes.contains(node)) {
 			this.hiddenNodes.add(node);
 		}
+	}
+	
+	public void setAverageBonusPoints(double averageBonusPoints) {
+		this.averageBonusPointsPerWord = averageBonusPoints;
+	}
+	
+	public double getAverageBonusPoints() {
+		return this.averageBonusPointsPerWord;
 	}
 
 }

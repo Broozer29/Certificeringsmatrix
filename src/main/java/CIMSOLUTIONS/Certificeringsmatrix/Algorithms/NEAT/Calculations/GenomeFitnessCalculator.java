@@ -10,10 +10,10 @@ public class GenomeFitnessCalculator {
 	private LinkedHashMap<String, Double> wordScores;
 	private List<String> biasedWords;
 	private int wordsForFitnessCalculationAmount;
-	private int bonusPointsWeightSubtractor;
+	private double bonusPointsWeightSubtractor;
 
 	public GenomeFitnessCalculator(LinkedHashMap<String, Double> wordScores, List<String> biasedWords,
-			int wordsForFitnessCalculationCount, int bonusPointsScaler) {
+			int wordsForFitnessCalculationCount, double bonusPointsScaler) {
 		this.wordScores = wordScores;
 		this.biasedWords = biasedWords;
 		this.wordsForFitnessCalculationAmount = wordsForFitnessCalculationCount;
@@ -23,7 +23,7 @@ public class GenomeFitnessCalculator {
 	/*- This method calculates the fitness of a Genome based on the following:
 	 *		The "wordsForFitnessCalculationCount" amount of words in "adjustedWordScores" that are Biased Words. (75% or higher gets a greatly increased score)	
 	 *		The amount of bonus points added to a Biased word. (The lower the amount of added bonus points, the higher the score)
-	 * NOTE: A Genome CAN recieve a negative score. This happens because it is possible for Genomes to subtract points from words as well. 
+	 * NOTE: A Genome CAN have a negative averageBonusPoints score. This happens because it is possible for Genomes to subtract points from words as well. 
 	 * 		This behaviour allows Genomes to correct themselves, but also allows negative scores.
 	 */
 	
@@ -49,20 +49,28 @@ public class GenomeFitnessCalculator {
 //	    System.out.println("Match percentage :" + matchPercentage + " Matching words: " + matchingWords
 //	            + " Total words: " + totalWords);
 
-	    // Calculate the total bonus points added
+	    // Calculate the average amount of bonus points added per word
 	    double totalBonusPoints = 0;
+	    int wordCount = 0;
+
 	    for (Map.Entry<String, Double> entry : adjustedWordScores.entrySet()) {
 	        String word = entry.getKey();
 	        double adjustedScore = entry.getValue();
 	        double originalScore = wordScores.get(word);
+
 	        if (biasedWords.contains(word)) {
 	            totalBonusPoints += (adjustedScore - originalScore);
+	            wordCount++;
 	        }
 	    }
 
+	    double averageBonusPoints = totalBonusPoints / wordCount;
+	    
+	    
+	    genome.setAverageBonusPoints(totalBonusPoints);
 	    //The scaling factor is how much the Genome gets punished for adding unnecesary bonus points
 	    
-	    double baseFitness = 1 / (1 + Math.abs(totalBonusPoints / bonusPointsWeightSubtractor));
+	    double baseFitness = 1 / (1 + Math.abs(averageBonusPoints / bonusPointsWeightSubtractor));
 
 	    double finalFitness;
 	    if (matchPercentage >= 0.75) {

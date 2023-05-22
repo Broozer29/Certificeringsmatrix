@@ -22,7 +22,7 @@ public class NEATConfiguration {
 	private double newNodeMutationRate = 0.00;
 	
 	private double mutationStrength = 0.0;
-	private int bonusPointsWeightSubtractor = 0;
+	private double bonusPointsWeightSubtractor = 0;
 	
 	
 	public NEATConfiguration() {
@@ -33,10 +33,10 @@ public class NEATConfiguration {
 	// As long as they are all set and higher than 0 and no negative values, they are valid.
 	public void setDefaultNEATConfigurations() {
 		setNeuronOutputSize(5);
-		setPopulationSize(10);
-		setGenerations(5);
+		setPopulationSize(100);
+		setGenerations(10);
 		setSpeciesSharingThreshold(3);
-		setTopXWordsUsedForFitnessCalculation(30);
+		setTopXWordsUsedForFitnessCalculation(60);
 		setMinimumAmountOfOffspring(3);
 
 		setExcessGeneImportance(1.0);
@@ -48,7 +48,8 @@ public class NEATConfiguration {
 		setNewNodeMutationRate(0.2);
 
 		setMutationStrength(1.0);
-		setBonusPointsWeightSubtractor(10);
+		//The bonus points weight subtractor should never be below 0
+		setBonusPointsWeightSubtractor(1.1);
 	}
 
 
@@ -189,11 +190,11 @@ public class NEATConfiguration {
 		return this.minimumAmountOfOffspring;
 	}
 
-	public int getBonusPointsWeightSubtractor() {
+	public double getBonusPointsWeightSubtractor() {
 		return bonusPointsWeightSubtractor;
 	}
 
-	public void setBonusPointsWeightSubtractor(int bonusPointsWeightSubtractor) {
+	public void setBonusPointsWeightSubtractor(double bonusPointsWeightSubtractor) {
 		this.bonusPointsWeightSubtractor = bonusPointsWeightSubtractor;
 	}
 
