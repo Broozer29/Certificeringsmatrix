@@ -62,10 +62,6 @@ public class WordVectorMatrix {
 		readyForUse = true;
 	}
 
-	public Collection<String> getNearestWords(String word, int amount) {
-		return wordVectorMatrix.wordsNearest(word, amount);
-	}
-
 	// This method returns the similarity between 2 strings that contain a single word each
 	public Double getSimilarity(String firstWord, String secondWord) {
 		return wordVectorMatrix.similarity(firstWord, secondWord);

@@ -26,9 +26,10 @@ public class GenomeExporter {
 		try (FileOutputStream fileOut = new FileOutputStream(filename);
 				ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
 
-			System.out.println("Writing biased words of the following size: " + genome.getBiasedWords().size());
+			System.out.println("      >Writing biased words of the following size: " + genome.getBiasedWords().size());
+			System.out.println("      >Total bonus points of: " + genome.getAverageBonusPoints());
 			objectOut.writeObject(genome);
-			System.out.println("Genome object serialized and saved to " + filename);
+			System.out.println("      >Genome object serialized and saved to " + filename);
 
 		} catch (IOException e) {
 			throw new IOException("Error writing Genome to file", e);

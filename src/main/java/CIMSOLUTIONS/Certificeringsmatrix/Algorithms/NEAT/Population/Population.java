@@ -86,7 +86,6 @@ public class Population {
 			for (Genome genome : genomes) {
 				double fitness = fitnessEvaluator.calculateFitness(genome);
 				genome.setFitness(fitness);
-				System.out.println(genome.getFitness());
 			}
 
 			// Speciate the genomes
@@ -121,9 +120,9 @@ public class Population {
 				// SHOULD BE A CONFIGURATION PARAMETER
 				List<Genome> selectedGenomes = species.performSelection(numberOfOffspring, 0.5);
 
-				for (Genome gen : selectedGenomes) {
-					System.out.println(" Parents fitness: " + gen.getFitness());
-				}
+//				for (Genome gen : selectedGenomes) {
+//					System.out.println(" Parents fitness: " + gen.getFitness());
+//				}
 
 				// Create offspring through crossover and mutation based on the selectedGenomes
 

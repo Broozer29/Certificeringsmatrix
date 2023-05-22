@@ -84,6 +84,8 @@ public class Crossoverseer {
 		for (Node node : parent1.getOutputNodes()) {
 			child.addOutputNode(node);
 		}
+		// Copy the biased words of the fittest parent, though both should work
+		child.setBiasedWords(parent1.getBiasedWords());
 		return child;
 	}
 }

@@ -36,7 +36,7 @@ public class NEATDriver {
 	private double newNodeMutationRate = 0.00;
 
 	private double mutationStrength = 0;
-	private int bonusPointsWeightSubtractor = 0;
+	private double bonusPointsWeightSubtractor = 0;
 
 	private Mutator mutator = null;
 	private Crossoverseer crossoverseer = null;
